@@ -18,10 +18,13 @@ const AuthContext = createContext<AuthContextProps>({
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user')
+    return savedUser ? JSON.parse(savedUser) : null
+  })
 
   useEffect(() => {
-    const clientId = import.meta.env.VITE_CLIENT_ID // Use VITE_ prefix
+    const clientId = import.meta.env.VITE_CLIENT_ID
 
     const info = new OAuthInfo({
       appId: clientId,
@@ -31,24 +34,44 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     IdentityManager.registerOAuthInfos([info])
 
-    IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
-      .then(() => {
-        const portal = new Portal()
-        portal.load().then(() => {
-          setUser(portal.user)
+    if (!user) {
+      IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
+        .then(() => {
+          const portal = new Portal()
+          portal.load().then(() => {
+            const user = portal.user
+            const userInfo = {
+              username: user.username,
+              fullName: user.fullName,
+              email: user.email,
+              role: user.role
+              // Add any other properties you need
+            }
+            setUser(userInfo)
+            localStorage.setItem('user', JSON.stringify(userInfo))
+          })
         })
-      })
-      .catch(() => {
-        setUser(null)
-      })
-  }, [])
+        .catch(() => {
+          setUser(null)
+        })
+    }
+  }, [user])
 
   const signIn = () => {
     IdentityManager.getCredential(`https://www.arcgis.com/sharing`)
       .then(() => {
         const portal = new Portal()
         portal.load().then(() => {
-          setUser(portal.user)
+          const user = portal.user
+          const userInfo = {
+            username: user.username,
+            fullName: user.fullName,
+            email: user.email,
+            role: user.role
+            // Add any other properties you need
+          }
+          setUser(userInfo)
+          localStorage.setItem('user', JSON.stringify(userInfo))
         })
       })
       .catch(() => {
@@ -59,6 +82,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const signOut = () => {
     IdentityManager.destroyCredentials()
     setUser(null)
+    localStorage.removeItem('user')
     window.location.reload()
   }
 
