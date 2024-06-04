@@ -29,7 +29,7 @@ const MapPort = () => {
     }
   }, [])
 
-  return <div id="viewDiv" style={{ height: '100vh', width: '100vw' }}></div>
+  return <div id="viewDiv" style={{ height: '80vh', width: '90vw' }}></div>
 }
 
 export default MapPort
