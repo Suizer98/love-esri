@@ -2,7 +2,7 @@ import { Box, ChakraProvider } from '@chakra-ui/react'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import './App.css'
-import { LoveEsriRoutes, Navigation } from './components/Home'
+import { LoveEsriViewBar, LoveEsriViewDiv } from './components/Home'
 import { AuthProvider } from './components/contexts/AuthContexts'
 
 const App = () => {
@@ -10,9 +10,9 @@ const App = () => {
     <ChakraProvider>
       <AuthProvider>
         <Router>
-          <Box>
-            <Navigation />
-            <LoveEsriRoutes />
+          <Box display="flex" flexDirection="column" height="100vh">
+            <LoveEsriViewBar />
+            <LoveEsriViewDiv />
           </Box>
         </Router>
       </AuthProvider>

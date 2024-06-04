@@ -19,7 +19,9 @@ const MapPort = () => {
 
     const view = new MapView({
       container: viewDiv,
-      map: map
+      map: map,
+      zoom: 5,
+      center: [103, 1.5]
     })
 
     return () => {
@@ -29,7 +31,7 @@ const MapPort = () => {
     }
   }, [])
 
-  return <div id="viewDiv" style={{ height: '80vh', width: '90vw' }}></div>
+  return <div id="viewDiv" style={{ height: '100%', width: '100%' }}></div>
 }
 
 export default MapPort

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.bp5-tree-node-caret-none {
+/* .bp5-tree-node-caret-none {
   min-width: 7.5px;
 }
 
@@ -43,4 +43,4 @@
   .map-2-tab-div {
     @apply grid grid-flow-col mb-1.5 p-1 auto-cols-max gap-x-2 w-full overflow-x-auto flex-shrink-0;
   }
-}
+} */
