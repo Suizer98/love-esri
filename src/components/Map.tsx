@@ -1,4 +1,4 @@
-import Basemap from '@arcgis/core/Basemap.js'
+import Basemap from '@arcgis/core/Basemap'
 import Map from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
 import { useEffect } from 'react'
@@ -26,7 +26,7 @@ const MapPort = () => {
 
     return () => {
       if (view) {
-        view.container = null
+        ;(view.container as unknown) = null
       }
     }
   }, [])

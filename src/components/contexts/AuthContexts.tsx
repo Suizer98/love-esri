@@ -1,12 +1,16 @@
 import IdentityManager from '@arcgis/core/identity/IdentityManager'
 import OAuthInfo from '@arcgis/core/identity/OAuthInfo'
 import Portal from '@arcgis/core/portal/Portal'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 
 interface AuthContextProps {
   user: any
   signIn: () => void
   signOut: () => void
+}
+
+interface AuthProviderProps {
+  children: ReactNode
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -17,7 +21,7 @@ const AuthContext = createContext<AuthContextProps>({
 
 export const useAuth = () => useContext(AuthContext)
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user')
     return savedUser ? JSON.parse(savedUser) : null
