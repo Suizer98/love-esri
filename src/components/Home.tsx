@@ -9,10 +9,10 @@ export function LoveEsriViewBar() {
   const { user, signIn, signOut } = useAuth()
 
   return (
-    <Flex as="nav" bg="teal.500" p={4} color="white" width="100%">
+    <Flex as="nav" bg="#370B6D" p={4} color="white" width="100%">
       <HStack spacing={4}>
-        <Heading as={RouterLink} to="/" variant="link" size="md">
-          Love ESRI
+        <Heading as={RouterLink} to="/" variant="link" size="md" color="white">
+          {`</>`} Love ESRI
         </Heading>
         <Button as={RouterLink} to="/" variant="link" color="white">
           Map
@@ -45,13 +45,17 @@ export function LoveEsriViewDiv() {
 
   return (
     <Box display="flex" width="100%" height="100%">
-      <Box width="20%" bg="gray.100" p={4}>
+      <Box width="20%" bg="gray.50" p={4}>
         <VStack align="start" spacing={4}>
-          <Text fontWeight="bold">station 1</Text>
+          <Text fontWeight="bold" color="blue.800">
+            station 1
+          </Text>
           <Button variant="link" color="red.500">
             fake data
           </Button>
-          <Text fontWeight="bold">station 2</Text>
+          <Text fontWeight="bold" color="blue.800">
+            station 2
+          </Text>
           <Button variant="link" color="blue.500">
             fake data
           </Button>
