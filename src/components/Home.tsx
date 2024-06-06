@@ -60,7 +60,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
   return (
     <Box display="flex" width="100%" height="100%">
       <Box
-        width={isVisible ? '15%' : '0'}
+        width={isVisible ? '20%' : '0'}
         bg="gray.50"
         p={isVisible ? 4 : 0}
         transition="width 0.3s ease, padding 0.3s ease"
