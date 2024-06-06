@@ -1,0 +1,24 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Docker Compose
+        run: |
+          docker-compose --version
+      - name: Run tests
+        run: |
+          echo "Running test"
+          docker-compose -f docker-compose-staging.yml run nextjsazure npm run style-check
+          docker system prune -a -f --filter "until=24h"
