@@ -7,10 +7,40 @@ interface AuthState {
   user: any
   signIn: () => void
   signOut: () => void
+  checkExistingSession: () => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: JSON.parse(localStorage.getItem('user') || 'null'),
+
+  checkExistingSession: async () => {
+    const clientId = import.meta.env.VITE_CLIENT_ID
+
+    const info = new OAuthInfo({
+      appId: clientId,
+      portalUrl: 'https://www.arcgis.com',
+      popup: false
+    })
+
+    IdentityManager.registerOAuthInfos([info])
+
+    try {
+      await IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
+      const portal = new Portal()
+      await portal.load()
+      const user = portal.user
+      const userInfo = {
+        username: user.username,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role
+      }
+      set({ user: userInfo })
+      localStorage.setItem('user', JSON.stringify(userInfo))
+    } catch (error) {
+      set({ user: null })
+    }
+  },
 
   signIn: async () => {
     const clientId = import.meta.env.VITE_CLIENT_ID
@@ -45,6 +75,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     IdentityManager.destroyCredentials()
     set({ user: null })
     localStorage.removeItem('user')
-    window.location.reload()
+    // window.location.reload()
   }
 }))

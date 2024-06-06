@@ -94,7 +94,7 @@ const MapPort = () => {
         className="esri-widget"
         style={{
           position: 'absolute',
-          top: '30px',
+          top: '70px',
           right: '10px',
           width: '250px',
           padding: '10px',

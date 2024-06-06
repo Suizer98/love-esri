@@ -1,6 +1,7 @@
 import { Box, Text, VStack } from '@chakra-ui/react'
+import { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { useShallow } from 'zustand/react/shallow'
+import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
 import About from '../About'
@@ -12,11 +13,23 @@ interface LoveEsriViewSideBarProps {
 }
 
 export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
-  const { user } = useAuthStore(
-    useShallow((state) => ({
-      user: state.user
-    }))
+  const { user, checkExistingSession } = useAuthStore(
+    (state) => ({
+      user: state.user,
+      signIn: state.signIn,
+      signOut: state.signOut,
+      checkExistingSession: state.checkExistingSession
+    }),
+    shallow
   )
+
+  useEffect(() => {
+    checkExistingSession()
+  }, [checkExistingSession])
+
+  useEffect(() => {
+    checkExistingSession()
+  }, [checkExistingSession])
 
   return (
     <Box display="flex" width="100%" height="100%">
