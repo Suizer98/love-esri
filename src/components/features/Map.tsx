@@ -1,16 +1,21 @@
 import Basemap from '@arcgis/core/Basemap'
 import Map from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
+import Search from '@arcgis/core/widgets/Search'
 import { useEffect } from 'react'
+
+import { useMapStore } from '../../store/useMapStore'
 
 const MapPort = () => {
   const basemapItems = [
     { value: 'arcgis/navigation', text: 'arcgis/navigation' },
     { value: 'arcgis/navigation-night', text: 'arcgis/navigation-night' },
+    { value: 'arcgis/satellite', text: 'arcgis/satellite', selected: true },
     { value: 'arcgis/streets', text: 'arcgis/streets' },
     { value: 'arcgis/streets-relief', text: 'arcgis/streets-relief' },
     { value: 'arcgis/streets-night', text: 'arcgis/streets-night' },
-    { value: 'arcgis/outdoor', text: 'arcgis/outdoor', selected: true },
+    { value: 'arcgis/outdoor', text: 'arcgis/outdoor' },
     { value: 'arcgis/imagery', text: 'arcgis/imagery' },
     { value: 'arcgis/topographic', text: 'arcgis/topographic' },
     { value: 'arcgis/terrain', text: 'arcgis/terrain' },
@@ -36,28 +41,39 @@ const MapPort = () => {
     { value: 'osm/blueprint', text: 'osm/blueprint' }
   ]
 
-  useEffect(() => {
-    const basemap = new Basemap({
-      style: {
-        id: 'arcgis/outdoor'
-      }
-    })
+  const viewType = useMapStore((state) => state.viewType)
 
+  useEffect(() => {
     const map = new Map({
-      basemap: basemap
+      basemap: 'satellite',
+      ground: 'world-elevation'
     })
 
     const viewDiv = document.getElementById('viewDiv') as HTMLDivElement
 
-    const view = new MapView({
-      container: viewDiv,
-      map: map,
-      zoom: 5,
-      center: [103, 1.5],
-      ui: {
-        components: []
-      }
-    })
+    let view: MapView | SceneView
+
+    if (viewType === '3D') {
+      view = new SceneView({
+        container: viewDiv,
+        scale: 123456789,
+        map: map,
+        center: [103, 1.5],
+        ui: {
+          components: []
+        }
+      })
+    } else {
+      view = new MapView({
+        container: viewDiv,
+        map: map,
+        zoom: 5,
+        center: [103, 1.5],
+        ui: {
+          components: []
+        }
+      })
+    }
 
     const updateBasemapStyle = (basemapId: string) => {
       view.map.basemap = new Basemap({
@@ -85,7 +101,7 @@ const MapPort = () => {
         view.destroy()
       }
     }
-  }, [])
+  }, [viewType])
 
   return (
     <div id="viewDiv" style={{ height: '100%', width: '100%' }}>
@@ -101,7 +117,6 @@ const MapPort = () => {
           zIndex: 5
         }}
       >
-        {/* <calcite-label>Basemap style</calcite-label> */}
         <calcite-combobox id="styleCombobox" selection-mode="single" clear-disabled>
           {basemapItems.map((item) => (
             <calcite-combobox-item
