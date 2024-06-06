@@ -160,9 +160,20 @@ const MapPort = () => {
           routeResult.symbol = routeSymbol
           routeLayer.add(routeResult)
 
+          const extent = data.routeResults[0].directions.extent
+          zoomToExtent(extent)
+
           setRouteSteps(data.routeResults[0].directions.features)
         } else {
           console.error('No valid route result found:', data)
+        }
+      }
+
+      const zoomToExtent = (extent: any) => {
+        if (viewRef.current) {
+          viewRef.current.goTo(extent).catch((error: any) => {
+            console.error('Error zooming to extent:', error)
+          })
         }
       }
 
