@@ -75,6 +75,16 @@ const MapPort = () => {
       })
     }
 
+    const searchWidgetDiv = document.createElement('div')
+    searchWidgetDiv.id = 'searchWidgetDiv'
+    searchWidgetDiv.className = 'absolute top-2 left-2 p-2 z-10'
+    view.ui.add(searchWidgetDiv)
+
+    new Search({
+      container: searchWidgetDiv,
+      view: view
+    })
+
     const updateBasemapStyle = (basemapId: string) => {
       view.map.basemap = new Basemap({
         style: {
@@ -104,7 +114,7 @@ const MapPort = () => {
   }, [viewType])
 
   return (
-    <div id="viewDiv" style={{ height: '100%', width: '100%' }}>
+    <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
       <div
         id="basemapStyles"
         className="esri-widget"
