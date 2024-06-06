@@ -1,5 +1,4 @@
 import Basemap from '@arcgis/core/Basemap'
-// Import necessary modules for routing
 import Graphic from '@arcgis/core/Graphic'
 import Map from '@arcgis/core/Map'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
@@ -11,7 +10,7 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
 import { basemapItems } from './constants'
@@ -19,6 +18,13 @@ import { basemapItems } from './constants'
 const MapPort = () => {
   const viewType = useMapStore((state) => state.viewType)
   const routingMode = useMapStore((state) => state.routingMode)
+
+  const viewRef = useRef<MapView | SceneView | null>(null)
+  const routeLayerRef = useRef<GraphicsLayer | null>(null)
+  const routeParamsRef = useRef<RouteParameters | null>(null)
+  const stopSymbolRef = useRef<SimpleMarkerSymbol | null>(null)
+  const routeSymbolRef = useRef<SimpleLineSymbol | null>(null)
+  const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
 
   useEffect(() => {
     const map = new Map({
@@ -52,6 +58,8 @@ const MapPort = () => {
       })
     }
 
+    viewRef.current = view
+
     const searchWidgetDiv = document.createElement('div')
     searchWidgetDiv.id = 'searchWidgetDiv'
     searchWidgetDiv.className = 'absolute top-2 left-2 p-2 z-10'
@@ -83,12 +91,22 @@ const MapPort = () => {
       }
     }
 
+    return () => {
+      if (clickHandlerRef.current) {
+        clickHandlerRef.current.remove()
+      }
+      if (viewRef.current) {
+        viewRef.current.destroy()
+        viewRef.current = null
+      }
+    }
+  }, [viewType])
+
+  useEffect(() => {
     if (routingMode) {
-      // Setup for routing
-      const routeUrl =
-        'https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World'
       const routeLayer = new GraphicsLayer()
-      map.add(routeLayer)
+      routeLayerRef.current = routeLayer
+      viewRef.current?.map.add(routeLayer)
 
       const routeParams = new RouteParameters({
         apiKey: import.meta.env.VITE_ESRI_API,
@@ -97,46 +115,63 @@ const MapPort = () => {
         }),
         outSpatialReference: { wkid: 3857 }
       })
+      routeParamsRef.current = routeParams
 
       const stopSymbol = new SimpleMarkerSymbol({
         style: 'cross',
         size: 15,
         outline: { width: 4 }
       })
+      stopSymbolRef.current = stopSymbol
 
       const routeSymbol = new SimpleLineSymbol({
         color: [0, 0, 255, 0.5],
         width: 5
       })
+      routeSymbolRef.current = routeSymbol
 
-      view.on('click', addStop)
-
-      function addStop(event: any) {
+      const addStop = (event: any) => {
         const stop = new Graphic({
           geometry: event.mapPoint,
           symbol: stopSymbol
         })
         routeLayer.add(stop)
-
         ;(routeParams.stops as FeatureSet).features.push(stop)
         if ((routeParams.stops as FeatureSet).features.length >= 2) {
-          route.solve(routeUrl, routeParams).then(showRoute)
+          route
+            .solve(
+              'https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World',
+              routeParams
+            )
+            .then(showRoute)
+            .catch((error) => {
+              console.error('Error solving route:', error)
+            })
         }
       }
 
-      function showRoute(data: any) {
-        const routeResult = data.routeResults[0].route
-        routeResult.symbol = routeSymbol
-        routeLayer.add(routeResult)
+      const showRoute = (data: any) => {
+        if (data.routeResults && data.routeResults.length > 0 && data.routeResults[0].route) {
+          const routeResult = data.routeResults[0].route
+          routeResult.symbol = routeSymbol
+          routeLayer.add(routeResult)
+        } else {
+          console.error('No valid route result found:', data)
+        }
       }
-    }
 
-    return () => {
-      if (view) {
-        view.destroy()
+      clickHandlerRef.current = viewRef.current?.on('click', addStop) || null
+
+      return () => {
+        if (clickHandlerRef.current) {
+          clickHandlerRef.current.remove()
+        }
+        if (viewRef.current?.map && routeLayerRef.current) {
+          viewRef.current.map.remove(routeLayerRef.current)
+        }
       }
     }
-  }, [viewType, routingMode])
+  }, [routingMode])
 
   return (
     <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>

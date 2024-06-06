@@ -1,4 +1,4 @@
-import { Box, Button, Radio, RadioGroup, Stack, Text, VStack } from '@chakra-ui/react'
+import { Box, Checkbox, Radio, RadioGroup, Stack, Text, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
@@ -67,9 +67,11 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
               <Text fontWeight="bold" color="blue.800">
                 Toggle route mode
               </Text>
-              <Button variant="link" color="black" onClick={toggleRoutingMode}>
-                {routingMode ? '-> Disable Routing' : '-> Enable Routing'}
-              </Button>
+              <Box bg="white" p={4} borderRadius="md" boxShadow="md">
+                <Checkbox isChecked={routingMode} onChange={toggleRoutingMode}>
+                  Enable Routing
+                </Checkbox>
+              </Box>
             </>
           )}
         </VStack>
