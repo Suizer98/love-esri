@@ -1,4 +1,4 @@
-import { Box, Radio, RadioGroup, Stack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Radio, RadioGroup, Stack, Text, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
@@ -28,6 +28,14 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     viewType: state.viewType,
     switchView: state.switchView
   }))
+
+  const { routingMode, toggleRoutingMode } = useMapStore(
+    (state) => ({
+      routingMode: state.routingMode,
+      toggleRoutingMode: state.toggleRoutingMode
+    }),
+    shallow
+  )
 
   useEffect(() => {
     checkExistingSession()
@@ -61,11 +69,11 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                 </RadioGroup>
               </Box>
               <Text fontWeight="bold" color="blue.800">
-                station 1
+                Toggle route mode
               </Text>
-              <Text fontWeight="bold" color="blue.800">
-                station 2
-              </Text>
+              <Button variant="link" color="black" onClick={toggleRoutingMode}>
+                {routingMode ? '-> Disable Routing' : '-> Enable Routing'}
+              </Button>
             </>
           )}
         </VStack>
