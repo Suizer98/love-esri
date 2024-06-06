@@ -6,7 +6,7 @@ import { shallow } from 'zustand/shallow'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useMapStore } from '../../store/useMapStore'
 import About from '../features/About'
-import MapPort from '../features/Map'
+import MapPort from '../features/Map/Map'
 import Warning from '../features/Warning'
 
 interface LoveEsriViewSideBarProps {
