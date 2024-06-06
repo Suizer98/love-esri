@@ -1,6 +1,17 @@
-import { Box, Checkbox, Radio, RadioGroup, Stack, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Checkbox,
+  HStack,
+  Radio,
+  RadioGroup,
+  Stack,
+  Text,
+  VStack,
+  useMediaQuery
+} from '@chakra-ui/react'
 import { useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Link as RouterLink, Routes } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
@@ -37,6 +48,8 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     shallow
   )
 
+  const [isLargerThanWidth] = useMediaQuery('(min-width: 768px)')
+
   useEffect(() => {
     checkExistingSession()
   }, [checkExistingSession])
@@ -53,6 +66,18 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
         <VStack align="start" spacing={4}>
           {isVisible && (
             <>
+              {!isLargerThanWidth && (
+                <HStack spacing={4}>
+                  <>
+                    <Button as={RouterLink} to="/" variant="link" color="white">
+                      Map
+                    </Button>
+                    <Button as={RouterLink} to="/about" variant="link" color="white">
+                      About
+                    </Button>
+                  </>
+                </HStack>
+              )}
               <Text fontWeight="bold" color="blue.800">
                 Switch View Type
               </Text>
