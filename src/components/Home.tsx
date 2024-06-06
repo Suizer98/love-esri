@@ -4,7 +4,7 @@ import { LoveEsriViewBar } from './view/LoveEsriViewBar'
 import { LoveEsriViewSideBar } from './view/LoveEsriViewSideBar'
 
 const LoveEsriApp = () => {
-  const [isSidebarVisible, setSidebarVisible] = useState(true)
+  const [isSidebarVisible, setSidebarVisible] = useState(false)
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible)
