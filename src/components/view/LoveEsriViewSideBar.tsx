@@ -44,7 +44,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
   return (
     <Box display="flex" width="100%" height="100%">
       <Box
-        width={isVisible ? { base: '60%', md: '20%' } : '0'}
+        width={isVisible ? { base: '100%', md: '20%' } : '0'}
         bg="gray.200"
         p={isVisible ? 4 : 0}
         transition="width 0.3s ease, padding 0.3s ease"
@@ -79,7 +79,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
       <Box
         flex="1"
         transition="width 0.3s ease"
-        width={isVisible ? { base: '40%', md: '80%' } : '100%'}
+        width={isVisible ? { base: '0%', md: '80%' } : '100%'}
       >
         <Routes>
           {user ? (
