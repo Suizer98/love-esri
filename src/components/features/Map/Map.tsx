@@ -10,7 +10,8 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
-import { useEffect, useRef } from 'react'
+import { Box } from '@chakra-ui/react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
 import { basemapItems } from './constants'
@@ -25,6 +26,8 @@ const MapPort = () => {
   const stopSymbolRef = useRef<SimpleMarkerSymbol | null>(null)
   const routeSymbolRef = useRef<SimpleLineSymbol | null>(null)
   const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
+
+  const [routeSteps, setRouteSteps] = useState<[]>([])
 
   useEffect(() => {
     const map = new Map({
@@ -113,7 +116,8 @@ const MapPort = () => {
         stops: new FeatureSet({
           features: []
         }),
-        outSpatialReference: { wkid: 3857 }
+        outSpatialReference: { wkid: 3857 },
+        returnDirections: true
       })
       routeParamsRef.current = routeParams
 
@@ -155,6 +159,8 @@ const MapPort = () => {
           const routeResult = data.routeResults[0].route
           routeResult.symbol = routeSymbol
           routeLayer.add(routeResult)
+
+          setRouteSteps(data.routeResults[0].directions.features)
         } else {
           console.error('No valid route result found:', data)
         }
@@ -170,6 +176,8 @@ const MapPort = () => {
           viewRef.current.map.remove(routeLayerRef.current)
         }
       }
+    } else {
+      setRouteSteps([])
     }
   }, [routingMode])
 
@@ -198,6 +206,33 @@ const MapPort = () => {
           ))}
         </calcite-combobox>
       </div>
+      {routeSteps && (
+        <Box
+          title="Route Directions"
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            width: '300px',
+            maxHeight: '50%',
+            overflowY: 'auto',
+            zIndex: 10,
+            backgroundColor: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+          }}
+        >
+          <div style={{ listStyleType: 'none', padding: 0 }}>
+            {routeSteps.map((step: any, index: any) => (
+              <div
+                key={index}
+                style={{ marginBottom: '8px' }}
+              >{`${index + 1}. ${step.attributes.text}`}</div>
+            ))}
+          </div>
+        </Box>
+      )}
     </div>
   )
 }
