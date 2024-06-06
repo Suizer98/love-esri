@@ -101,7 +101,7 @@ const MapPort = () => {
           zIndex: 5
         }}
       >
-        <calcite-label>Basemap style</calcite-label>
+        {/* <calcite-label>Basemap style</calcite-label> */}
         <calcite-combobox id="styleCombobox" selection-mode="single" clear-disabled>
           {basemapItems.map((item) => (
             <calcite-combobox-item
