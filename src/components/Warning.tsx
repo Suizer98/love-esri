@@ -24,16 +24,16 @@ export function Warning() {
         </Text>
 
         <Button
+          as="a"
+          href="https://developers.arcgis.com/"
+          target="_blank"
+          rel="noopener noreferrer"
           w="200px"
           colorScheme="blue"
           variant="solid"
           h="50px"
           size={isLargerThanLG ? 'lg' : 'md'}
           mb={isLargerThanLG ? '0' : '10'}
-          onClick={(e) => {
-            e.preventDefault()
-            window.location.href = 'https://developers.arcgis.com/'
-          }}
         >
           Register here
         </Button>

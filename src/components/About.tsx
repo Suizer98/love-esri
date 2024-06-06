@@ -24,16 +24,16 @@ export function About() {
         </Text>
 
         <Button
+          as="a"
+          href="https://github.com/Suizer98/love-esri"
+          target="_blank"
+          rel="noopener noreferrer"
           w="200px"
           colorScheme="gray"
           variant="solid"
           h="50px"
           size={isLargerThanLG ? 'lg' : 'md'}
           mb={isLargerThanLG ? '0' : '10'}
-          onClick={(e) => {
-            e.preventDefault()
-            window.location.href = 'https://github.com/Suizer98/love-esri'
-          }}
         >
           Read More
         </Button>
