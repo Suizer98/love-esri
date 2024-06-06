@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Spacer, Text, useMediaQuery } from '@chakra-ui/react'
 
-export function About() {
+export function Warning() {
   const [isLargerThanLG] = useMediaQuery('(min-width: 62em)')
   return (
     <Flex
@@ -13,29 +13,29 @@ export function About() {
       flexDirection={isLargerThanLG ? 'row' : 'column'}
     >
       <Box mr={isLargerThanLG ? '6' : '0'} w={isLargerThanLG ? '60%' : 'full'}>
-        <Text fontSize={isLargerThanLG ? '5xl' : '4xl'} fontWeight="bold" mb="4">
+        {/* <Text fontSize={isLargerThanLG ? '5xl' : '4xl'} fontWeight="bold" mb="4">
           {' '}
           Created by Sui Zer
-        </Text>
+        </Text> */}
 
         <Text mb="6" fontSize={isLargerThanLG ? 'lg' : 'base'} opacity={0.7}>
-          This is to showcase that I am able to utilise the APIs provided by ESRI company so that I
-          can be more prepared for possible future requirements.
+          To display the map and use the relevant features, you will need to sign in to your own
+          ArcGIS Developer account due to free usage limitations.
         </Text>
 
         <Button
           w="200px"
-          colorScheme="gray"
+          colorScheme="blue"
           variant="solid"
           h="50px"
           size={isLargerThanLG ? 'lg' : 'md'}
           mb={isLargerThanLG ? '0' : '10'}
           onClick={(e) => {
             e.preventDefault()
-            window.location.href = 'https://github.com/Suizer98/love-esri'
+            window.location.href = 'https://developers.arcgis.com/'
           }}
         >
-          Read More
+          Register here
         </Button>
       </Box>
       <Spacer />
@@ -44,4 +44,4 @@ export function About() {
   )
 }
 
-export default About
+export default Warning

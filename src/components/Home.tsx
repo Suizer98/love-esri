@@ -3,6 +3,7 @@ import { Route, Link as RouterLink, Routes } from 'react-router-dom'
 
 import About from './About'
 import MapPort from './Map'
+import Warning from './Warning'
 import { useAuth } from './contexts/AuthContexts'
 
 export function LoveEsriViewBar() {
@@ -63,7 +64,11 @@ export function LoveEsriViewDiv() {
       </Box>
       <Box width="80%">
         <Routes>
-          {user ? <Route path="/" element={<MapPort />} /> : <Route path="/" element={<></>} />}
+          {user ? (
+            <Route path="/" element={<MapPort />} />
+          ) : (
+            <Route path="/" element={<Warning />} />
+          )}
           <Route path="/about" element={<About />} />
         </Routes>
       </Box>
