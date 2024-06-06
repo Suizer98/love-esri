@@ -4,9 +4,9 @@ import { Route, Routes } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
-import About from '../About'
-import MapPort from '../Map'
-import Warning from '../Warning'
+import About from '../features/About'
+import MapPort from '../features/Map'
+import Warning from '../features/Warning'
 
 interface LoveEsriViewSideBarProps {
   isVisible: boolean
