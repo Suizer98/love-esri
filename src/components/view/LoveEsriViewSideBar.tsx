@@ -1,17 +1,6 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  HStack,
-  Radio,
-  RadioGroup,
-  Stack,
-  Text,
-  VStack,
-  useMediaQuery
-} from '@chakra-ui/react'
+import { Box, Checkbox, Radio, RadioGroup, Stack, Text, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
-import { Route, Link as RouterLink, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
@@ -19,6 +8,7 @@ import { useMapStore } from '../../store/useMapStore'
 import About from '../features/About'
 import MapPort from '../features/Map/Map'
 import Warning from '../features/Warning'
+import { LoveEsriSideBarRoute } from './LoveEsriRoute'
 
 interface LoveEsriViewSideBarProps {
   isVisible: boolean
@@ -48,8 +38,6 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     shallow
   )
 
-  const [isLargerThanWidth] = useMediaQuery('(min-width: 768px)')
-
   useEffect(() => {
     checkExistingSession()
   }, [checkExistingSession])
@@ -66,18 +54,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
         <VStack align="start" spacing={4}>
           {isVisible && (
             <>
-              {!isLargerThanWidth && (
-                <HStack spacing={4}>
-                  <>
-                    <Button as={RouterLink} to="/" variant="link" color="white">
-                      Map
-                    </Button>
-                    <Button as={RouterLink} to="/about" variant="link" color="white">
-                      About
-                    </Button>
-                  </>
-                </HStack>
-              )}
+              <LoveEsriSideBarRoute />
               <Text fontWeight="bold" color="blue.800">
                 Switch View Type
               </Text>
@@ -110,9 +87,9 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
           {user ? (
             <Route path="/" element={<MapPort />} />
           ) : (
-            <Route path="/" element={<Warning />} />
+            !isVisible && <Route path="/" element={<Warning />} />
           )}
-          <Route path="/about" element={<About />} />
+          {!isVisible && <Route path="/about" element={<About />} />}
         </Routes>
       </Box>
     </Box>

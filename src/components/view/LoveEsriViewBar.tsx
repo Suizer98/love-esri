@@ -1,10 +1,11 @@
 import { HamburgerIcon } from '@chakra-ui/icons'
-import { Button, Flex, HStack, Heading, Spacer, useMediaQuery } from '@chakra-ui/react'
+import { Button, Flex, HStack, Heading, Spacer } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
+import { LoveEsriMainBarRoute } from './LoveEsriRoute'
 
 interface LoveEsriViewBarProps {
   onToggleSidebar: () => void
@@ -25,8 +26,6 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
     checkExistingSession()
   }, [checkExistingSession])
 
-  const [isLargerThanWidth] = useMediaQuery('(min-width: 768px)')
-
   return (
     <Flex as="nav" bg="#370B6D" p={4} color="white" width="100%">
       <HStack spacing={4}>
@@ -36,16 +35,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
         <Heading as={RouterLink} to="/" variant="link" size="md" color="white">
           {`</>`} Love ESRI
         </Heading>
-        {isLargerThanWidth && (
-          <>
-            <Button as={RouterLink} to="/" variant="link" color="white">
-              Map
-            </Button>
-            <Button as={RouterLink} to="/about" variant="link" color="white">
-              About
-            </Button>
-          </>
-        )}
+        <LoveEsriMainBarRoute />
       </HStack>
       <Spacer />
       {user ? (
