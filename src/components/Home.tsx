@@ -1,7 +1,7 @@
 import { useMediaQuery } from '@chakra-ui/react'
 import { useEffect } from 'react'
 
-import useViewStore from '../store/useViewStore'
+import { useViewStore } from '../store/useViewStore'
 import { LoveEsriViewBar } from './view/LoveEsriViewBar'
 import { LoveEsriViewSideBar } from './view/LoveEsriViewSideBar'
 

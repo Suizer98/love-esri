@@ -5,6 +5,7 @@ import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
 import { useMapStore } from '../../store/useMapStore'
+import { useViewStore } from '../../store/useViewStore'
 import About from '../features/About'
 import MapPort from '../features/Map/Map'
 import Warning from '../features/Warning'
@@ -25,8 +26,8 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     shallow
   )
 
-  const { viewType, switchMapType } = useMapStore((state) => ({
-    viewType: state.mapType,
+  const { mapType, switchMapType } = useMapStore((state) => ({
+    mapType: state.mapType,
     switchMapType: state.switchMapType
   }))
 
@@ -38,6 +39,11 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     }),
     shallow
   )
+
+  const { isDesktopMode } = useViewStore((state) => ({
+    isDesktopMode: state.isDesktopMode,
+    switchMapType: state.isDesktopMode
+  }))
 
   useEffect(() => {
     checkExistingSession()
@@ -62,7 +68,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
               <Box bg="white" p={4} borderRadius="md" boxShadow="md">
                 <RadioGroup
                   onChange={(value) => switchMapType(value as '2D' | '3D')}
-                  value={viewType}
+                  value={mapType}
                   isDisabled={!isMapAvailable}
                 >
                   <Stack direction="row" spacing={4}>
@@ -100,9 +106,9 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
           {user ? (
             <Route path="/" element={<MapPort />} />
           ) : (
-            !isVisible && <Route path="/" element={<Warning />} />
+            (!isVisible || isDesktopMode) && <Route path="/" element={<Warning />} />
           )}
-          {!isVisible && <Route path="/about" element={<About />} />}
+          {(!isVisible || isDesktopMode) && <Route path="/about" element={<About />} />}
         </Routes>
       </Box>
     </Box>

@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Spacer, Text } from '@chakra-ui/react'
 
-import useViewStore from '../../store/useViewStore'
+import { useViewStore } from '../../store/useViewStore'
 
 export function About() {
   const { isDesktopMode } = useViewStore()

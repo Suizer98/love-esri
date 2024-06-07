@@ -1,7 +1,7 @@
 import { Box, Button, HStack } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 
-import useViewStore from '../../store/useViewStore'
+import { useViewStore } from '../../store/useViewStore'
 
 export function LoveEsriSideBarRoute() {
   const { isDesktopMode, toggleSidebar } = useViewStore()

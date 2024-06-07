@@ -13,7 +13,7 @@ import Search from '@arcgis/core/widgets/Search'
 import { useEffect, useRef, useState } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
-import useViewStore from '../../../store/useViewStore'
+import { useViewStore } from '../../../store/useViewStore'
 import MapComboBox from './MapComboBox'
 import MapDirections from './MapDirections'
 
