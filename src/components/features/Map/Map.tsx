@@ -105,7 +105,7 @@ const MapPort: React.FC = () => {
 
     recenterButtonDiv.addEventListener('click', () => {
       if (viewRef.current) {
-        viewRef.current.goTo({ center: [103.5, 1.5], zoom: 6 })
+        viewRef.current.goTo({ center: [103.5, 1.5], zoom: 6, heading: 0, tilt: 0 })
       }
     })
 
