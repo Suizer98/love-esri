@@ -30,6 +30,11 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
     shallow
   )
 
+  const handleSignOut = () => {
+    setIsMapAvailable(false)
+    signOut()
+  }
+
   useEffect(() => {
     checkExistingSession()
   }, [checkExistingSession])
@@ -51,7 +56,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
           <Button variant="link" color="white">
             {user.username}
           </Button>
-          <Button variant="link" onClick={signOut} color="white">
+          <Button variant="link" onClick={handleSignOut} color="white">
             Sign Out
           </Button>
         </HStack>
