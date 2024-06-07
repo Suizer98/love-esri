@@ -29,7 +29,7 @@ const MapPort = () => {
   const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
-  const { isSidebarVisible, toggleSidebar } = useViewStore()
+  const { isSidebarVisible, toggleSidebar, isDesktopMode } = useViewStore()
 
   useEffect(() => {
     const map = new Map({
@@ -193,10 +193,10 @@ const MapPort = () => {
       setRouteSteps([])
     }
   }, [routingMode])
-
+  console.log(isDesktopMode)
   return (
     <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
-      {isSidebarVisible && (
+      {(isDesktopMode || isSidebarVisible) && (
         <div
           id="basemapStyles"
           className="esri-widget"

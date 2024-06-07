@@ -1,12 +1,14 @@
-import { Box, Button, HStack, useMediaQuery } from '@chakra-ui/react'
+import { Box, Button, HStack } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 
+import useViewStore from '../../store/useViewStore'
+
 export function LoveEsriSideBarRoute() {
-  const [isLargerThanWidth] = useMediaQuery('(min-width: 768px)')
+  const { isDesktopMode } = useViewStore()
 
   return (
     <>
-      {!isLargerThanWidth ? (
+      {!isDesktopMode ? (
         <Box bg="#5F3AAF" p={4} borderRadius="md" boxShadow="md">
           <HStack spacing={4}>
             <Button as={RouterLink} to="/" variant="link" color="white">
@@ -23,11 +25,11 @@ export function LoveEsriSideBarRoute() {
 }
 
 export function LoveEsriMainBarRoute() {
-  const [isLargerThanWidth] = useMediaQuery('(min-width: 768px)')
+  const { isDesktopMode } = useViewStore()
 
   return (
     <>
-      {isLargerThanWidth ? (
+      {isDesktopMode ? (
         <>
           <Button as={RouterLink} to="/" variant="link" color="white">
             Map
