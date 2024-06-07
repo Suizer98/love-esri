@@ -6,6 +6,7 @@ import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
 import { useMapStore } from '../../store/useMapStore'
+import { useViewStore } from '../../store/useViewStore'
 import { LoveEsriMainBarRoute } from './LoveEsriRoute'
 
 interface LoveEsriViewBarProps {
@@ -30,6 +31,8 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
     shallow
   )
 
+  const { isDesktopMode } = useViewStore()
+
   const handleSignOut = () => {
     setIsMapAvailable(false)
     signOut()
@@ -53,7 +56,12 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
       <Spacer />
       {user ? (
         <HStack spacing={4}>
-          <Text maxW="100px" isTruncated title={user.username} color="#CCBEEA">
+          <Text
+            maxW={isDesktopMode ? '200px' : '50px'}
+            isTruncated
+            title={user.username}
+            color="#CCBEEA"
+          >
             {user.username}
           </Text>
           <Button variant="link" onClick={handleSignOut} color="white">
