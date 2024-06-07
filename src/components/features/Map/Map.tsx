@@ -74,9 +74,15 @@ const MapPort: React.FC = () => {
     searchWidgetDiv.className = 'absolute top-4 left-2 p-2 z-10'
     view.ui.add(searchWidgetDiv)
 
-    new Search({
+    const searchWidget = new Search({
       container: searchWidgetDiv,
       view: view
+    })
+
+    searchWidget.on('search-complete', function () {
+      // Remove the docking functionality
+      view.popup.dockEnabled = false
+      view.popup.collapseEnabled = false
     })
 
     view.when(() => {
