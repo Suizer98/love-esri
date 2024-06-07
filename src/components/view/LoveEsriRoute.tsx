@@ -4,17 +4,33 @@ import { Link as RouterLink } from 'react-router-dom'
 import useViewStore from '../../store/useViewStore'
 
 export function LoveEsriSideBarRoute() {
-  const { isDesktopMode } = useViewStore()
+  const { isDesktopMode, toggleSidebar } = useViewStore()
 
   return (
     <>
       {!isDesktopMode ? (
         <Box bg="#5F3AAF" p={4} borderRadius="md" boxShadow="md">
           <HStack spacing={4}>
-            <Button as={RouterLink} to="/" variant="link" color="white">
+            <Button
+              as={RouterLink}
+              to="/"
+              variant="link"
+              color="white"
+              onClick={() => {
+                toggleSidebar()
+              }}
+            >
               Map
             </Button>
-            <Button as={RouterLink} to="/about" variant="link" color="white">
+            <Button
+              as={RouterLink}
+              to="/about"
+              variant="link"
+              color="white"
+              onClick={() => {
+                toggleSidebar()
+              }}
+            >
               About
             </Button>
           </HStack>
