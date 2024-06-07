@@ -1,6 +1,6 @@
 import { HamburgerIcon } from '@chakra-ui/icons'
-import { Button, Flex, HStack, Heading, Spacer, Text } from '@chakra-ui/react'
-import { useEffect } from 'react'
+import { Button, Flex, HStack, Heading, Spacer, Text, useToast } from '@chakra-ui/react'
+import { useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
@@ -32,15 +32,41 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
   )
 
   const { isDesktopMode } = useViewStore()
+  const toastShownRef = useRef(false)
+  const toast = useToast()
+
+  const handleSignIn = () => {
+    signIn()
+  }
 
   const handleSignOut = () => {
     setIsMapAvailable(false)
     signOut()
+    toast({
+      title: 'Success',
+      description: 'You have signed out.',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+      position: 'top'
+    })
   }
 
   useEffect(() => {
-    checkExistingSession()
-  }, [checkExistingSession])
+    checkExistingSession().then((signInStatus: any) => {
+      if (signInStatus === 'success' && !toastShownRef.current) {
+        toast({
+          title: 'Success',
+          description: 'You have signed in.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+          position: 'top'
+        })
+        toastShownRef.current = true
+      }
+    })
+  }, [checkExistingSession, toast])
 
   return (
     <Flex as="nav" bg="#370B6D" p={4} color="white" width="100%">
@@ -69,7 +95,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
           </Button>
         </HStack>
       ) : (
-        <Button variant="link" onClick={signIn} color="white">
+        <Button variant="link" onClick={handleSignIn} color="white">
           Sign In
         </Button>
       )}

@@ -10,6 +10,7 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
+import { useToast } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
@@ -29,6 +30,8 @@ const MapPort: React.FC = () => {
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
+
+  const toast = useToast()
 
   useEffect(() => {
     setIsMapAvailable(false)
@@ -146,6 +149,14 @@ const MapPort: React.FC = () => {
             .then(showRoute)
             .catch((error) => {
               console.error('Error solving route:', error)
+              toast({
+                title: 'An error occurred.',
+                description: 'Unable to solve route.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: 'top'
+              })
             })
         }
       }

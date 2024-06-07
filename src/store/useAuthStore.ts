@@ -7,13 +7,13 @@ interface AuthState {
   user: any
   signIn: () => void
   signOut: () => void
-  checkExistingSession: () => void
+  checkExistingSession: () => Promise<string>
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: JSON.parse(localStorage.getItem('user') || 'null'),
 
-  checkExistingSession: async () => {
+  checkExistingSession: async (): Promise<string> => {
     const clientId = import.meta.env.VITE_CLIENT_ID
 
     const info = new OAuthInfo({
@@ -37,8 +37,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       set({ user: userInfo })
       localStorage.setItem('user', JSON.stringify(userInfo))
+      return 'success'
     } catch (error) {
       set({ user: null })
+      return 'error'
     }
   },
 
