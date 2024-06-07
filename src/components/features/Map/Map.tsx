@@ -10,8 +10,9 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
-import { useToast } from '@chakra-ui/react'
+import { Tooltip, useToast } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
+import { createRoot } from 'react-dom/client'
 
 import { useMapStore } from '../../../store/useMapStore'
 import MapComboBox from './MapComboBox'
@@ -59,8 +60,8 @@ const MapPort: React.FC = () => {
       view = new MapView({
         container: viewDiv,
         map: map,
-        zoom: 5,
-        center: [103, 1.5],
+        zoom: 6,
+        center: [103.5, 1.5],
         ui: {
           components: []
         }
@@ -83,6 +84,29 @@ const MapPort: React.FC = () => {
       // Remove the docking functionality
       view.popup.dockEnabled = false
       view.popup.collapseEnabled = false
+    })
+
+    // Create and add the recenter button
+    const recenterButtonDiv = document.createElement('div')
+    recenterButtonDiv.className = 'recenter-button esri-widget--button esri-widget'
+    const tooltipContainer = document.createElement('div')
+    createRoot(tooltipContainer).render(
+      <Tooltip label="Recenter" bg="black" color="white">
+        <div
+          className="recenter-button esri-widget--button esri-widget"
+          style={{ cursor: 'pointer' }}
+        >
+          <span className="esri-icon esri-icon-globe"></span>
+        </div>
+      </Tooltip>
+    )
+    recenterButtonDiv.appendChild(tooltipContainer)
+    view.ui.add(recenterButtonDiv, 'bottom-left')
+
+    recenterButtonDiv.addEventListener('click', () => {
+      if (viewRef.current) {
+        viewRef.current.goTo({ center: [103.5, 1.5], zoom: 6 })
+      }
     })
 
     view

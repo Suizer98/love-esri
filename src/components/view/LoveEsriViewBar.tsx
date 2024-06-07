@@ -1,5 +1,5 @@
 import { HamburgerIcon } from '@chakra-ui/icons'
-import { Button, Flex, HStack, Heading, Spacer, Text, useToast } from '@chakra-ui/react'
+import { Button, Flex, HStack, Heading, Spacer, Text, Tooltip, useToast } from '@chakra-ui/react'
 import { useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
@@ -45,7 +45,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
     toast({
       title: 'Success',
       description: 'You have signed out.',
-      status: 'success',
+      status: 'info',
       duration: 5000,
       isClosable: true,
       position: 'top'
@@ -82,14 +82,16 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
       <Spacer />
       {user ? (
         <HStack spacing={4}>
-          <Text
-            maxW={isDesktopMode ? '200px' : '50px'}
-            isTruncated
-            title={user.username}
-            color="#CCBEEA"
-          >
-            {user.username}
-          </Text>
+          <Tooltip label={user.username} bg="black">
+            <Text
+              maxW={isDesktopMode ? '200px' : '50px'}
+              isTruncated
+              title={user.username}
+              color="#CCBEEA"
+            >
+              {user.username}
+            </Text>
+          </Tooltip>
           <Button variant="link" onClick={handleSignOut} color="white">
             Sign Out
           </Button>

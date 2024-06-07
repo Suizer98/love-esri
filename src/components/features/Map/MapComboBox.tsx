@@ -1,3 +1,4 @@
+import { Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
@@ -36,30 +37,32 @@ const MapComboBox: React.FC<MapComboBoxProps> = ({ updateBasemapStyle }) => {
   if (!isMapAvailable || (!isDesktopMode && !isSidebarVisible)) return null
 
   return (
-    <div
-      id="basemapStyles"
-      className="esri-widget"
-      style={{
-        position: 'absolute',
-        top: '72px',
-        right: '10px',
-        width: '195px',
-        height: '48px',
-        padding: '10px',
-        zIndex: 5
-      }}
-    >
-      <calcite-combobox id="styleCombobox" selection-mode="single" clear-disabled>
-        {basemapItems.map((item) => (
-          <calcite-combobox-item
-            key={item.value}
-            value={item.value}
-            text-label={item.text}
-            selected={item.selected || false}
-          ></calcite-combobox-item>
-        ))}
-      </calcite-combobox>
-    </div>
+    <Tooltip label="Switch tile type" bg="black" placement="top">
+      <div
+        id="basemapStyles"
+        className="esri-widget"
+        style={{
+          position: 'absolute',
+          top: '72px',
+          right: '10px',
+          width: '195px',
+          height: '48px',
+          padding: '10px',
+          zIndex: 5
+        }}
+      >
+        <calcite-combobox id="styleCombobox" selection-mode="single" clear-disabled>
+          {basemapItems.map((item) => (
+            <calcite-combobox-item
+              key={item.value}
+              value={item.value}
+              text-label={item.text}
+              selected={item.selected || false}
+            ></calcite-combobox-item>
+          ))}
+        </calcite-combobox>
+      </div>
+    </Tooltip>
   )
 }
 
