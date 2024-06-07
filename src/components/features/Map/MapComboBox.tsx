@@ -33,7 +33,7 @@ const MapComboBox: React.FC<MapComboBoxProps> = ({ isVisible, updateBasemapStyle
         position: 'absolute',
         top: '72px',
         right: '10px',
-        width: '250px',
+        width: '195px',
         height: '48px',
         padding: '10px',
         zIndex: 5
