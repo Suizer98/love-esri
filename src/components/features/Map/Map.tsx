@@ -14,6 +14,7 @@ import { Button, Heading } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
+import useViewStore from '../../../store/useViewStore'
 import { basemapItems } from './constants'
 
 const MapPort = () => {
@@ -28,7 +29,7 @@ const MapPort = () => {
   const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
-  const [isExpanded, setIsExpanded] = useState(false)
+  const { isSidebarVisible, toggleSidebar } = useViewStore()
 
   useEffect(() => {
     const map = new Map({
@@ -66,7 +67,7 @@ const MapPort = () => {
 
     const searchWidgetDiv = document.createElement('div')
     searchWidgetDiv.id = 'searchWidgetDiv'
-    searchWidgetDiv.className = 'absolute top-3 left-2 p-2 z-10'
+    searchWidgetDiv.className = 'absolute top-4 left-2 p-2 z-10'
     view.ui.add(searchWidgetDiv)
 
     new Search({
@@ -195,30 +196,32 @@ const MapPort = () => {
 
   return (
     <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
-      <div
-        id="basemapStyles"
-        className="esri-widget"
-        style={{
-          position: 'absolute',
-          top: '68px',
-          right: '10px',
-          width: '250px',
-          height: '48px',
-          padding: '10px',
-          zIndex: 5
-        }}
-      >
-        <calcite-combobox id="styleCombobox" selection-mode="single" clear-disabled>
-          {basemapItems.map((item) => (
-            <calcite-combobox-item
-              key={item.value}
-              value={item.value}
-              text-label={item.text}
-              selected={item.selected || false}
-            ></calcite-combobox-item>
-          ))}
-        </calcite-combobox>
-      </div>
+      {isSidebarVisible && (
+        <div
+          id="basemapStyles"
+          className="esri-widget"
+          style={{
+            position: 'absolute',
+            top: '72px',
+            right: '10px',
+            width: '250px',
+            height: '48px',
+            padding: '10px',
+            zIndex: 5
+          }}
+        >
+          <calcite-combobox id="styleCombobox" selection-mode="single" clear-disabled>
+            {basemapItems.map((item) => (
+              <calcite-combobox-item
+                key={item.value}
+                value={item.value}
+                text-label={item.text}
+                selected={item.selected || false}
+              ></calcite-combobox-item>
+            ))}
+          </calcite-combobox>
+        </div>
+      )}
       {routeSteps.length > 0 ? (
         <div
           title="Route Directions"
@@ -228,8 +231,8 @@ const MapPort = () => {
             bottom: '10px',
             right: '10px',
             width: '250px',
-            maxHeight: isExpanded ? '50%' : '50px',
-            overflowY: isExpanded ? 'auto' : 'hidden',
+            maxHeight: isSidebarVisible ? '50%' : '50px',
+            overflowY: isSidebarVisible ? 'auto' : 'hidden',
             zIndex: 10,
             backgroundColor: 'white',
             padding: '10px',
@@ -242,11 +245,11 @@ const MapPort = () => {
             <Heading as="h4" size="md" mb={0}>
               Directions
             </Heading>
-            <Button size="sm" onClick={() => setIsExpanded(!isExpanded)}>
-              {isExpanded ? 'Collapse' : 'Expand'}
+            <Button size="sm" onClick={() => toggleSidebar()}>
+              {isSidebarVisible ? 'Collapse' : 'Expand'}
             </Button>
           </div>
-          {isExpanded && (
+          {isSidebarVisible && (
             <div style={{ listStyleType: 'none', padding: '10px 0 0 0' }}>
               {routeSteps.map((step: any, index: any) => (
                 <div key={index} style={{ marginBottom: '8px' }}>

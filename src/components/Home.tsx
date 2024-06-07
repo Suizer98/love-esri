@@ -1,14 +1,9 @@
-import { useState } from 'react'
-
+import useViewStore from '../store/useViewStore'
 import { LoveEsriViewBar } from './view/LoveEsriViewBar'
 import { LoveEsriViewSideBar } from './view/LoveEsriViewSideBar'
 
 const LoveEsriApp = () => {
-  const [isSidebarVisible, setSidebarVisible] = useState(false)
-
-  const toggleSidebar = () => {
-    setSidebarVisible(!isSidebarVisible)
-  }
+  const { isSidebarVisible, toggleSidebar } = useViewStore()
 
   return (
     <>
