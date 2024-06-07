@@ -5,6 +5,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
+import { useMapStore } from '../../store/useMapStore'
 import { LoveEsriMainBarRoute } from './LoveEsriRoute'
 
 interface LoveEsriViewBarProps {
@@ -18,6 +19,13 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
       signIn: state.signIn,
       signOut: state.signOut,
       checkExistingSession: state.checkExistingSession
+    }),
+    shallow
+  )
+
+  const { setIsMapAvailable } = useMapStore(
+    (state) => ({
+      setIsMapAvailable: state.setIsMapAvailable
     }),
     shallow
   )
@@ -43,7 +51,14 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
           <Button variant="link" color="white">
             {user.username}
           </Button>
-          <Button variant="link" onClick={signOut} color="white">
+          <Button
+            variant="link"
+            onClick={() => {
+              signOut
+              setIsMapAvailable(false)
+            }}
+            color="white"
+          >
             Sign Out
           </Button>
         </HStack>

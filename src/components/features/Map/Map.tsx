@@ -20,6 +20,7 @@ import MapDirections from './MapDirections'
 const MapPort: React.FC = () => {
   const viewType = useMapStore((state) => state.mapType)
   const routingMode = useMapStore((state) => state.routingMode)
+  const setIsMapAvailable = useMapStore((state) => state.setIsMapAvailable)
 
   const viewRef = useRef<MapView | SceneView | null>(null)
   const routeLayerRef = useRef<GraphicsLayer | null>(null)
@@ -33,6 +34,8 @@ const MapPort: React.FC = () => {
   const { isSidebarVisible, isDesktopMode } = useViewStore()
 
   useEffect(() => {
+    setIsMapAvailable(false)
+
     const map = new Map({
       basemap: 'satellite',
       ground: 'world-elevation'
@@ -74,6 +77,10 @@ const MapPort: React.FC = () => {
     new Search({
       container: searchWidgetDiv,
       view: view
+    })
+
+    view.when(() => {
+      setIsMapAvailable(true)
     })
 
     return () => {

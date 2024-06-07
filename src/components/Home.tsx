@@ -12,6 +12,7 @@ const LoveEsriApp = () => {
   useEffect(() => {
     if (isLargerThanWidth) {
       setIsDesktopMode(true)
+      toggleSidebar()
     } else {
       setIsDesktopMode(false)
     }

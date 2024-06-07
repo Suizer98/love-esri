@@ -30,10 +30,11 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     switchMapType: state.switchMapType
   }))
 
-  const { routingMode, toggleRoutingMode } = useMapStore(
+  const { routingMode, toggleRoutingMode, isMapAvailable } = useMapStore(
     (state) => ({
       routingMode: state.routingMode,
-      toggleRoutingMode: state.toggleRoutingMode
+      toggleRoutingMode: state.toggleRoutingMode,
+      isMapAvailable: state.isMapAvailable
     }),
     shallow
   )
@@ -62,10 +63,15 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                 <RadioGroup
                   onChange={(value) => switchMapType(value as '2D' | '3D')}
                   value={viewType}
+                  isDisabled={!isMapAvailable}
                 >
                   <Stack direction="row" spacing={4}>
-                    <Radio value="2D">2D View</Radio>
-                    <Radio value="3D">3D View</Radio>
+                    <Radio value="2D" disabled={!isMapAvailable}>
+                      2D View
+                    </Radio>
+                    <Radio value="3D" disabled={!isMapAvailable}>
+                      3D View
+                    </Radio>
                   </Stack>
                 </RadioGroup>
               </Box>
@@ -73,7 +79,11 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                 Toggle route mode
               </Text>
               <Box bg="white" p={4} borderRadius="md" boxShadow="md">
-                <Checkbox isChecked={routingMode} onChange={toggleRoutingMode}>
+                <Checkbox
+                  isChecked={routingMode}
+                  disabled={!isMapAvailable}
+                  onChange={toggleRoutingMode}
+                >
                   Enable Routing
                 </Checkbox>
               </Box>
