@@ -1,5 +1,5 @@
 import { HamburgerIcon } from '@chakra-ui/icons'
-import { Button, Flex, HStack, Heading, Spacer } from '@chakra-ui/react'
+import { Button, Flex, HStack, Heading, Spacer, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
@@ -53,9 +53,9 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
       <Spacer />
       {user ? (
         <HStack spacing={4}>
-          <Button variant="link" color="white">
+          <Text maxW="100px" isTruncated title={user.username} color="#CCBEEA">
             {user.username}
-          </Button>
+          </Text>
           <Button variant="link" onClick={handleSignOut} color="white">
             Sign Out
           </Button>
