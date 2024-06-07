@@ -10,7 +10,7 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
-import { Box } from '@chakra-ui/react'
+import { Button, Heading } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
@@ -28,6 +28,7 @@ const MapPort = () => {
   const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     const map = new Map({
@@ -65,7 +66,7 @@ const MapPort = () => {
 
     const searchWidgetDiv = document.createElement('div')
     searchWidgetDiv.id = 'searchWidgetDiv'
-    searchWidgetDiv.className = 'absolute top-2 left-2 p-2 z-10'
+    searchWidgetDiv.className = 'absolute top-3 left-2 p-2 z-10'
     view.ui.add(searchWidgetDiv)
 
     new Search({
@@ -199,9 +200,10 @@ const MapPort = () => {
         className="esri-widget"
         style={{
           position: 'absolute',
-          top: '70px',
+          top: '68px',
           right: '10px',
           width: '250px',
+          height: '48px',
           padding: '10px',
           zIndex: 5
         }}
@@ -217,33 +219,44 @@ const MapPort = () => {
           ))}
         </calcite-combobox>
       </div>
-      {routeSteps && (
-        <Box
+      {routeSteps.length > 0 ? (
+        <div
           title="Route Directions"
+          className="esri-widget"
           style={{
             position: 'absolute',
             bottom: '10px',
             right: '10px',
-            width: '300px',
-            maxHeight: '50%',
-            overflowY: 'auto',
+            width: '250px',
+            maxHeight: isExpanded ? '50%' : '50px',
+            overflowY: isExpanded ? 'auto' : 'hidden',
             zIndex: 10,
             backgroundColor: 'white',
             padding: '10px',
             borderRadius: '5px',
-            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+            transition: 'max-height 0.3s ease-in-out'
           }}
         >
-          <div style={{ listStyleType: 'none', padding: 0 }}>
-            {routeSteps.map((step: any, index: any) => (
-              <div
-                key={index}
-                style={{ marginBottom: '8px' }}
-              >{`${index + 1}. ${step.attributes.text}`}</div>
-            ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Heading as="h4" size="md" mb={0}>
+              Directions
+            </Heading>
+            <Button size="sm" onClick={() => setIsExpanded(!isExpanded)}>
+              {isExpanded ? 'Collapse' : 'Expand'}
+            </Button>
           </div>
-        </Box>
-      )}
+          {isExpanded && (
+            <div style={{ listStyleType: 'none', padding: '10px 0 0 0' }}>
+              {routeSteps.map((step: any, index: any) => (
+                <div key={index} style={{ marginBottom: '8px' }}>
+                  {`${index + 1}. ${step.attributes.text}`}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : null}
     </div>
   )
 }
