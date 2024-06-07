@@ -26,16 +26,13 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     shallow
   )
 
-  const { mapType, switchMapType } = useMapStore((state) => ({
-    mapType: state.mapType,
-    switchMapType: state.switchMapType
-  }))
-
-  const { routingMode, toggleRoutingMode, isMapAvailable } = useMapStore(
+  const { routingMode, toggleRoutingMode, isMapAvailable, mapType, switchMapType } = useMapStore(
     (state) => ({
       routingMode: state.routingMode,
       toggleRoutingMode: state.toggleRoutingMode,
-      isMapAvailable: state.isMapAvailable
+      isMapAvailable: state.isMapAvailable,
+      mapType: state.mapType,
+      switchMapType: state.switchMapType
     }),
     shallow
   )

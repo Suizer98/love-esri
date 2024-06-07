@@ -1,29 +1,39 @@
 import { useEffect } from 'react'
 
+import { useMapStore } from '../../../store/useMapStore'
+import { useViewStore } from '../../../store/useViewStore'
 import { basemapItems } from './constants'
 
 interface MapComboBoxProps {
-  isVisible: boolean
   updateBasemapStyle: (basemapId: string) => void
 }
 
-const MapComboBox: React.FC<MapComboBoxProps> = ({ isVisible, updateBasemapStyle }) => {
+const MapComboBox: React.FC<MapComboBoxProps> = ({ updateBasemapStyle }) => {
+  const { isSidebarVisible, isDesktopMode } = useViewStore()
+  const { isMapAvailable } = useMapStore()
+
   useEffect(() => {
     const basemapStylesDiv = document.getElementById('basemapStyles')
     if (basemapStylesDiv) {
       const styleCombobox = basemapStylesDiv.querySelector('#styleCombobox') as HTMLDivElement
       if (styleCombobox) {
-        styleCombobox.addEventListener('calciteComboboxChange', (event: any) => {
+        const handleChange = (event: any) => {
           const selectedItem = event.target.selectedItems[0]
           if (selectedItem) {
             updateBasemapStyle(selectedItem.value)
           }
-        })
+        }
+
+        styleCombobox.addEventListener('calciteComboboxChange', handleChange)
+
+        return () => {
+          styleCombobox.removeEventListener('calciteComboboxChange', handleChange)
+        }
       }
     }
   }, [updateBasemapStyle])
 
-  if (!isVisible) return null
+  if (!isMapAvailable || (!isDesktopMode && !isSidebarVisible)) return null
 
   return (
     <div

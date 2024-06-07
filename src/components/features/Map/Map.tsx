@@ -13,14 +13,12 @@ import Search from '@arcgis/core/widgets/Search'
 import { useEffect, useRef, useState } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
-import { useViewStore } from '../../../store/useViewStore'
 import MapComboBox from './MapComboBox'
 import MapDirections from './MapDirections'
 
 const MapPort: React.FC = () => {
   const viewType = useMapStore((state) => state.mapType)
-  const routingMode = useMapStore((state) => state.routingMode)
-  const setIsMapAvailable = useMapStore((state) => state.setIsMapAvailable)
+  const { setIsMapAvailable, routingMode } = useMapStore()
 
   const viewRef = useRef<MapView | SceneView | null>(null)
   const routeLayerRef = useRef<GraphicsLayer | null>(null)
@@ -31,7 +29,6 @@ const MapPort: React.FC = () => {
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
-  const { isSidebarVisible, isDesktopMode } = useViewStore()
 
   useEffect(() => {
     setIsMapAvailable(false)
@@ -85,9 +82,13 @@ const MapPort: React.FC = () => {
       view.popup.collapseEnabled = false
     })
 
-    view.when(() => {
-      setIsMapAvailable(true)
-    })
+    view
+      .when(() => {
+        setIsMapAvailable(true)
+      })
+      .catch((error) => {
+        console.error('Error loading view:', error)
+      })
 
     return () => {
       if (clickHandlerRef.current) {
@@ -98,7 +99,7 @@ const MapPort: React.FC = () => {
         viewRef.current = null
       }
     }
-  }, [viewType])
+  }, [viewType, setIsMapAvailable])
 
   useEffect(() => {
     if (routingMode) {
@@ -189,28 +190,36 @@ const MapPort: React.FC = () => {
 
   const updateBasemapStyle = (basemapId: string) => {
     if (viewRef.current) {
-      viewRef.current.map.basemap = new Basemap({
+      const newBasemap = new Basemap({
         style: {
           id: basemapId
         }
       })
+
+      newBasemap
+        .load()
+        .then(() => {
+          viewRef.current!.map.basemap = newBasemap
+        })
+        .catch((error) => {
+          console.error('Error loading basemap:', error)
+        })
     }
   }
 
   return (
-    <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
-      <MapComboBox
-        isVisible={isDesktopMode || isSidebarVisible}
-        updateBasemapStyle={updateBasemapStyle}
-      />
-      {routeSteps.length > 0 && (
-        <MapDirections
-          routeSteps={routeSteps}
-          isExpanded={isExpanded}
-          setIsExpanded={setIsExpanded}
-        />
-      )}
-    </div>
+    <>
+      <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
+        {routeSteps.length > 0 && (
+          <MapDirections
+            routeSteps={routeSteps}
+            isExpanded={isExpanded}
+            setIsExpanded={setIsExpanded}
+          />
+        )}
+      </div>
+      <MapComboBox updateBasemapStyle={updateBasemapStyle} />
+    </>
   )
 }
 

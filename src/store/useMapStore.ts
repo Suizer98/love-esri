@@ -7,6 +7,8 @@ interface ViewTypeState {
   toggleRoutingMode: () => void
   isMapAvailable: boolean
   setIsMapAvailable: (available: boolean) => void
+  isMapLoading: boolean
+  setIsMapLoading: (loading: boolean) => void
 }
 
 export const useMapStore = create<ViewTypeState>((set) => ({
@@ -15,5 +17,7 @@ export const useMapStore = create<ViewTypeState>((set) => ({
   routingMode: false,
   toggleRoutingMode: () => set((state) => ({ routingMode: !state.routingMode })),
   isMapAvailable: false,
-  setIsMapAvailable: (available) => set({ isMapAvailable: available })
+  setIsMapAvailable: (available) => set({ isMapAvailable: available }),
+  isMapLoading: false,
+  setIsMapLoading: (loading) => set({ isMapLoading: loading })
 }))
