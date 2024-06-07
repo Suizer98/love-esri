@@ -25,9 +25,9 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     shallow
   )
 
-  const { viewType, switchView } = useMapStore((state) => ({
-    viewType: state.viewType,
-    switchView: state.switchView
+  const { viewType, switchMapType } = useMapStore((state) => ({
+    viewType: state.mapType,
+    switchMapType: state.switchMapType
   }))
 
   const { routingMode, toggleRoutingMode } = useMapStore(
@@ -59,7 +59,10 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                 Switch View Type
               </Text>
               <Box bg="white" p={4} borderRadius="md" boxShadow="md">
-                <RadioGroup onChange={(value) => switchView(value as '2D' | '3D')} value={viewType}>
+                <RadioGroup
+                  onChange={(value) => switchMapType(value as '2D' | '3D')}
+                  value={viewType}
+                >
                   <Stack direction="row" spacing={4}>
                     <Radio value="2D">2D View</Radio>
                     <Radio value="3D">3D View</Radio>

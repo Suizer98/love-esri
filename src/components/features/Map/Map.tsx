@@ -18,7 +18,7 @@ import MapComboBox from './MapComboBox'
 import MapDirections from './MapDirections'
 
 const MapPort: React.FC = () => {
-  const viewType = useMapStore((state) => state.viewType)
+  const viewType = useMapStore((state) => state.mapType)
   const routingMode = useMapStore((state) => state.routingMode)
 
   const viewRef = useRef<MapView | SceneView | null>(null)
