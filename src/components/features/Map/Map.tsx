@@ -10,14 +10,14 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
-import { Button, Heading } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 
 import { useMapStore } from '../../../store/useMapStore'
 import useViewStore from '../../../store/useViewStore'
-import { basemapItems } from './constants'
+import MapComboBox from './MapComboBox'
+import MapDirections from './MapDirections'
 
-const MapPort = () => {
+const MapPort: React.FC = () => {
   const viewType = useMapStore((state) => state.viewType)
   const routingMode = useMapStore((state) => state.routingMode)
 
@@ -29,7 +29,8 @@ const MapPort = () => {
   const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
-  const { isSidebarVisible, toggleSidebar, isDesktopMode } = useViewStore()
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  const { isSidebarVisible, isDesktopMode } = useViewStore()
 
   useEffect(() => {
     const map = new Map({
@@ -74,27 +75,6 @@ const MapPort = () => {
       container: searchWidgetDiv,
       view: view
     })
-
-    const updateBasemapStyle = (basemapId: string) => {
-      view.map.basemap = new Basemap({
-        style: {
-          id: basemapId
-        }
-      })
-    }
-
-    const basemapStylesDiv = document.getElementById('basemapStyles')
-    if (basemapStylesDiv) {
-      const styleCombobox = basemapStylesDiv.querySelector('#styleCombobox') as HTMLDivElement
-      if (styleCombobox) {
-        styleCombobox.addEventListener('calciteComboboxChange', (event: any) => {
-          const selectedItem = event.target.selectedItems[0]
-          if (selectedItem) {
-            updateBasemapStyle(selectedItem.value)
-          }
-        })
-      }
-    }
 
     return () => {
       if (clickHandlerRef.current) {
@@ -194,72 +174,29 @@ const MapPort = () => {
     }
   }, [routingMode])
 
+  const updateBasemapStyle = (basemapId: string) => {
+    if (viewRef.current) {
+      viewRef.current.map.basemap = new Basemap({
+        style: {
+          id: basemapId
+        }
+      })
+    }
+  }
+
   return (
     <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
-      {(isDesktopMode || isSidebarVisible) && (
-        <div
-          id="basemapStyles"
-          className="esri-widget"
-          style={{
-            position: 'absolute',
-            top: '72px',
-            right: '10px',
-            width: '250px',
-            height: '48px',
-            padding: '10px',
-            zIndex: 5
-          }}
-        >
-          <calcite-combobox id="styleCombobox" selection-mode="single" clear-disabled>
-            {basemapItems.map((item) => (
-              <calcite-combobox-item
-                key={item.value}
-                value={item.value}
-                text-label={item.text}
-                selected={item.selected || false}
-              ></calcite-combobox-item>
-            ))}
-          </calcite-combobox>
-        </div>
+      <MapComboBox
+        isVisible={isDesktopMode || isSidebarVisible}
+        updateBasemapStyle={updateBasemapStyle}
+      />
+      {routeSteps.length > 0 && (
+        <MapDirections
+          routeSteps={routeSteps}
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
+        />
       )}
-      {routeSteps.length > 0 ? (
-        <div
-          title="Route Directions"
-          className="esri-widget"
-          style={{
-            position: 'absolute',
-            bottom: '10px',
-            right: '10px',
-            width: '250px',
-            maxHeight: isSidebarVisible ? '50%' : '50px',
-            overflowY: isSidebarVisible ? 'auto' : 'hidden',
-            zIndex: 10,
-            backgroundColor: 'white',
-            padding: '10px',
-            borderRadius: '5px',
-            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-            transition: 'max-height 0.3s ease-in-out'
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Heading as="h4" size="md" mb={0}>
-              Directions
-            </Heading>
-            <Button size="sm" onClick={() => toggleSidebar()}>
-              {isSidebarVisible ? 'Collapse' : 'Expand'}
-            </Button>
-          </div>
-          {isSidebarVisible && (
-            <div style={{ listStyleType: 'none', padding: '10px 0 0 0' }}>
-              {routeSteps.map((step: any, index: any) => (
-                <div key={index} style={{ marginBottom: '8px' }}>
-                  {`${index + 1}. ${step.attributes.text}`}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ) : null}
     </div>
   )
 }
