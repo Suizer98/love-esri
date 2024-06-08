@@ -10,7 +10,7 @@ interface MapComboBoxProps {
 }
 
 const MapComboBox: React.FC<MapComboBoxProps> = ({ updateBasemapStyle }) => {
-  const { isSidebarVisible, isDesktopMode } = useViewStore()
+  const { isSidebarVisible } = useViewStore()
   const { isMapAvailable } = useMapStore()
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const MapComboBox: React.FC<MapComboBoxProps> = ({ updateBasemapStyle }) => {
     }
   }, [updateBasemapStyle])
 
-  if (!isMapAvailable || (isDesktopMode && isSidebarVisible)) return null
+  if (!isMapAvailable || isSidebarVisible) return null
 
   return (
     <Tooltip label="Switch tile type" bg="black" placement="top">
@@ -43,7 +43,7 @@ const MapComboBox: React.FC<MapComboBoxProps> = ({ updateBasemapStyle }) => {
         className="esri-widget"
         style={{
           position: 'absolute',
-          top: '80px',
+          top: '130px',
           left: '8px',
           width: '195px',
           height: '48px',
