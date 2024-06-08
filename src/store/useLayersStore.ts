@@ -5,6 +5,9 @@ interface Layer {
   name: string
   url: string
   visible: boolean
+  renderer?: any
+  effect?: string
+  type?: string
 }
 
 interface LayersState {
