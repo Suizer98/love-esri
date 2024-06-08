@@ -7,7 +7,7 @@ import { useMapStore } from '../../store/useMapStore'
 
 const LayerVisibilityControl: React.FC = () => {
   const { layers, toggleLayerVisibility } = useLayersStore()
-  const { viewRef, mapType } = useMapStore()
+  const { viewRef, mapType, isMapAvailable } = useMapStore()
 
   const updateCameraPosition = () => {
     if (viewRef && mapType === '3D') {
@@ -49,7 +49,7 @@ const LayerVisibilityControl: React.FC = () => {
           <Checkbox
             key={layer.name}
             isChecked={layer.name === '3D Buildings' && mapType === '2D' ? false : layer.visible}
-            isDisabled={layer.name === '3D Buildings' && mapType === '2D'}
+            isDisabled={(layer.name === '3D Buildings' && mapType === '2D') || !isMapAvailable}
             onChange={() => handleLayerToggle(layer.name)}
           >
             {layer.name}

@@ -41,7 +41,7 @@ const MapPort: React.FC = () => {
         container: viewDiv,
         scale: 123456789,
         map: map,
-        zoom: 6,
+        zoom: 3,
         center: [-100.39899666, 37.77940678],
         ui: {
           components: []
@@ -62,8 +62,8 @@ const MapPort: React.FC = () => {
       view = new MapView({
         container: viewDiv,
         map: map,
-        zoom: 6,
-        center: [-121.85784391531126, 36.58649531264832],
+        zoom: 3,
+        center: [-100.39899666, 37.77940678],
         ui: {
           components: []
         }
