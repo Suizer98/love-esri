@@ -61,49 +61,64 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
         overflow="hidden"
       >
         <VStack align="start" spacing={4}>
-          {isVisible && isMapRoute && (
+          {isVisible && (
             <>
               <LoveEsriSideBarRoute />
-              <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
-                Switch View Type
-              </Text>
-              <Tooltip label="Switch between 2D or 3D Map" bg="black" placement="top">
-                <Box bg="white" p={4} borderRadius="md" boxShadow="md">
-                  <RadioGroup
-                    onChange={(value) => switchMapType(value as '2D' | '3D')}
-                    value={mapType}
-                    isDisabled={!isMapAvailable}
-                  >
-                    <Stack direction="row" spacing={4}>
-                      <Radio value="2D" disabled={!isMapAvailable}>
-                        2D View
-                      </Radio>
-                      <Radio value="3D" disabled={!isMapAvailable}>
-                        3D View
-                      </Radio>
-                    </Stack>
-                  </RadioGroup>
-                </Box>
-              </Tooltip>
-              <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
-                Toggle route mode
-              </Text>
-              <Tooltip label="Create points for routes" bg="black" placement="top">
-                <Box bg="white" p={4} borderRadius="md" boxShadow="md">
-                  <Checkbox
-                    isChecked={routingMode}
-                    disabled={!isMapAvailable}
-                    onChange={toggleRoutingMode}
-                  >
-                    Enable Routing
-                  </Checkbox>
-                  <LoveEsriPopover />
-                </Box>
-              </Tooltip>
-              <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
-                Layers
-              </Text>
-              <LayerVisibilityControl />
+              {isMapRoute && (
+                <>
+                  <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
+                    Switch View Type
+                  </Text>
+                  <Tooltip label="Switch between 2D or 3D Map" bg="black" placement="top">
+                    <Box bg="white" p={4} borderRadius="md" boxShadow="md">
+                      <RadioGroup
+                        onChange={(value) => switchMapType(value as '2D' | '3D')}
+                        value={mapType}
+                        isDisabled={!isMapAvailable}
+                      >
+                        <Stack direction="row" spacing={4}>
+                          <Radio value="2D" disabled={!isMapAvailable}>
+                            2D View
+                          </Radio>
+                          <Radio value="3D" disabled={!isMapAvailable}>
+                            3D View
+                          </Radio>
+                        </Stack>
+                      </RadioGroup>
+                    </Box>
+                  </Tooltip>
+                  <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
+                    Toggle route mode
+                  </Text>
+                  <Tooltip label="Create points for routes" bg="black" placement="top">
+                    <Box bg="white" p={4} borderRadius="md" boxShadow="md">
+                      <Checkbox
+                        isChecked={routingMode}
+                        disabled={!isMapAvailable}
+                        onChange={toggleRoutingMode}
+                      >
+                        Enable Routing
+                      </Checkbox>
+                      <LoveEsriPopover />
+                    </Box>
+                  </Tooltip>
+                  <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
+                    Layers
+                  </Text>
+                  <LayerVisibilityControl />
+                </>
+              )}
+              {!isMapRoute && (
+                <Text
+                  className="esri-widget"
+                  fontSize="large"
+                  bg="gray.200"
+                  fontWeight="bold"
+                  color="blue.800"
+                >
+                  Nothing here...perhaps switch to Map Tab?
+                </Text>
+              )}
             </>
           )}
         </VStack>
