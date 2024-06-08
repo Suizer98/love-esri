@@ -31,6 +31,7 @@ const MapPort: React.FC = () => {
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const toast = useToast()
 
@@ -165,6 +166,7 @@ const MapPort: React.FC = () => {
         routeLayer.add(stop)
         ;(routeParams.stops as FeatureSet).features.push(stop)
         if ((routeParams.stops as FeatureSet).features.length >= 2) {
+          setLoading(true)
           route
             .solve(
               'https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World',
@@ -181,6 +183,9 @@ const MapPort: React.FC = () => {
                 isClosable: true,
                 position: 'top'
               })
+            })
+            .finally(() => {
+              setLoading(false)
             })
         }
       }
@@ -202,7 +207,8 @@ const MapPort: React.FC = () => {
 
       const zoomToExtent = (extent: any) => {
         if (viewRef.current) {
-          viewRef.current.goTo(extent).catch((error: any) => {
+          const expandedExtent = extent.clone().expand(1.2)
+          viewRef.current.goTo(expandedExtent).catch((error: any) => {
             console.error('Error zooming to extent:', error)
           })
         }
@@ -245,13 +251,12 @@ const MapPort: React.FC = () => {
   return (
     <>
       <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
-        {routeSteps.length > 0 && (
-          <MapDirections
-            routeSteps={routeSteps}
-            isExpanded={isExpanded}
-            setIsExpanded={setIsExpanded}
-          />
-        )}
+        <MapDirections
+          loading={loading}
+          routeSteps={routeSteps}
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
+        />
       </div>
       <MapComboBox updateBasemapStyle={updateBasemapStyle} />
     </>
