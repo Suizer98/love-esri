@@ -1,6 +1,6 @@
 import { Box, Checkbox, Radio, RadioGroup, Stack, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
@@ -8,6 +8,7 @@ import { useMapStore } from '../../store/useMapStore'
 import { useViewStore } from '../../store/useViewStore'
 import About from '../features/About'
 import MapPort from '../features/Map/Map'
+import Playground from '../features/Playground/Playground'
 import Warning from '../features/Warning'
 import LayerVisibilityControl from './LayerVisibilityControl'
 import { LoveEsriPopover } from './LoveEsriPopover'
@@ -43,6 +44,9 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     isDesktopMode: state.isDesktopMode
   }))
 
+  const location = useLocation()
+  const isMapRoute = location.pathname === '/'
+
   useEffect(() => {
     checkExistingSession()
   }, [checkExistingSession])
@@ -57,7 +61,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
         overflow="hidden"
       >
         <VStack align="start" spacing={4}>
-          {isVisible && (
+          {isVisible && isMapRoute && (
             <>
               <LoveEsriSideBarRoute />
               <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
@@ -115,6 +119,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
           ) : (
             (!isVisible || isDesktopMode) && <Route path="/" element={<Warning />} />
           )}
+          {(!isVisible || isDesktopMode) && <Route path="/playground" element={<Playground />} />}
           {(!isVisible || isDesktopMode) && <Route path="/about" element={<About />} />}
         </Routes>
       </Box>

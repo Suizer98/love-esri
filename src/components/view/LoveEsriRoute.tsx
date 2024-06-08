@@ -28,6 +28,19 @@ export function LoveEsriSideBarRoute() {
               className="esri-widget"
               bg="#5F3AAF"
               as={RouterLink}
+              to="/playground"
+              variant="link"
+              color="white"
+              onClick={() => {
+                toggleSidebar()
+              }}
+            >
+              Playground
+            </Button>
+            <Button
+              className="esri-widget"
+              bg="#5F3AAF"
+              as={RouterLink}
               to="/about"
               variant="link"
               color="white"
@@ -60,6 +73,16 @@ export function LoveEsriMainBarRoute() {
             color="white"
           >
             Map
+          </Button>
+          <Button
+            className="esri-widget"
+            bg="#370B6D"
+            as={RouterLink}
+            to="/playground"
+            variant="link"
+            color="white"
+          >
+            Playground
           </Button>
           <Button
             className="esri-widget"
