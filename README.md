@@ -59,3 +59,7 @@ npm run build
 `VITE_CLIENT_ID`: The OAuth application client ID
 
 `VITE_ESRI_API`: The normal api key provided when you register ArcGIS Developer
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
