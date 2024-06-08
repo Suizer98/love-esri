@@ -9,6 +9,7 @@ import { useViewStore } from '../../store/useViewStore'
 import About from '../features/About'
 import MapPort from '../features/Map/Map'
 import Warning from '../features/Warning'
+import LayerVisibilityControl from './LayerVisibilityControl'
 import { LoveEsriPopover } from './LoveEsriPopover'
 import { LoveEsriSideBarRoute } from './LoveEsriRoute'
 
@@ -96,6 +97,10 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                   <LoveEsriPopover />
                 </Box>
               </Tooltip>
+              <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
+                Layers
+              </Text>
+              <LayerVisibilityControl />
             </>
           )}
         </VStack>
