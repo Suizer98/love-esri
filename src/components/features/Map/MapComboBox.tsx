@@ -45,7 +45,7 @@ const MapComboBox: React.FC<MapComboBoxProps> = ({ updateBasemapStyle }) => {
           position: 'absolute',
           top: '72px',
           right: '10px',
-          width: '195px',
+          width: isDesktopMode ? '195px' : '150px',
           height: '48px',
           padding: '10px',
           zIndex: 5

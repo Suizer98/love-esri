@@ -10,7 +10,7 @@ export function LoveEsriSideBarRoute() {
     <>
       {!isDesktopMode ? (
         <Box bg="#5F3AAF" p={4} borderRadius="md" boxShadow="md">
-          <HStack spacing={4}>
+          <HStack spacing={2}>
             <Button
               className="esri-widget"
               bg="#5F3AAF"
