@@ -9,6 +9,7 @@ import { useViewStore } from '../../store/useViewStore'
 import About from '../features/About'
 import MapPort from '../features/Map/Map'
 import Warning from '../features/Warning'
+import { LoveEsriPopover } from './LoveEsriPopover'
 import { LoveEsriSideBarRoute } from './LoveEsriRoute'
 
 interface LoveEsriViewSideBarProps {
@@ -83,11 +84,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
               <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
                 Toggle route mode
               </Text>
-              <Tooltip
-                label="Click on the map to create points for routes"
-                bg="black"
-                placement="top"
-              >
+              <Tooltip label="Create points for routes" bg="black" placement="top">
                 <Box bg="white" p={4} borderRadius="md" boxShadow="md">
                   <Checkbox
                     isChecked={routingMode}
@@ -96,6 +93,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                   >
                     Enable Routing
                   </Checkbox>
+                  <LoveEsriPopover />
                 </Box>
               </Tooltip>
             </>

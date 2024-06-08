@@ -28,6 +28,7 @@ const MapPort: React.FC = () => {
   const stopSymbolRef = useRef<SimpleMarkerSymbol | null>(null)
   const routeSymbolRef = useRef<SimpleLineSymbol | null>(null)
   const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
+  const clearClickHandlerRef = useRef<__esri.WatchHandle | null>(null)
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -122,6 +123,9 @@ const MapPort: React.FC = () => {
       if (clickHandlerRef.current) {
         clickHandlerRef.current.remove()
       }
+      if (clearClickHandlerRef.current) {
+        clearClickHandlerRef.current.remove()
+      }
       if (viewRef.current) {
         viewRef.current.destroy()
         viewRef.current = null
@@ -190,6 +194,14 @@ const MapPort: React.FC = () => {
         }
       }
 
+      const clearStops = () => {
+        routeLayer.removeAll()
+        routeParams.stops = new FeatureSet({
+          features: []
+        })
+        setRouteSteps([])
+      }
+
       const showRoute = (data: any) => {
         if (data.routeResults && data.routeResults.length > 0 && data.routeResults[0].route) {
           const routeResult = data.routeResults[0].route
@@ -215,10 +227,20 @@ const MapPort: React.FC = () => {
       }
 
       clickHandlerRef.current = viewRef.current?.on('click', addStop) || null
+      clearClickHandlerRef.current =
+        viewRef.current?.on('double-click', (event: any) => {
+          if (event.button === 2) {
+            // 2 is the button number for right-click
+            clearStops()
+          }
+        }) || null
 
       return () => {
         if (clickHandlerRef.current) {
           clickHandlerRef.current.remove()
+        }
+        if (clearClickHandlerRef.current) {
+          clearClickHandlerRef.current.remove()
         }
         if (viewRef.current?.map && routeLayerRef.current) {
           viewRef.current.map.remove(routeLayerRef.current)
