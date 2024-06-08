@@ -6,10 +6,14 @@ import { useEffect } from 'react'
 
 import { useLayersStore } from '../../store/useLayersStore'
 import { useMapStore } from '../../store/useMapStore'
+import { useViewStore } from '../../store/useViewStore'
 
 const LayerVisibilityControl: React.FC = () => {
   const { layers, toggleLayerVisibility } = useLayersStore()
   const { viewRef, mapType, isMapAvailable } = useMapStore()
+  const { isDesktopMode } = useViewStore((state) => ({
+    isDesktopMode: state.isDesktopMode
+  }))
 
   const updateCameraPosition3D = async (layerName: string) => {
     if (viewRef && mapType === '3D') {
@@ -19,16 +23,28 @@ const LayerVisibilityControl: React.FC = () => {
         await layer.when()
         const extent = layer.fullExtent
         if (extent) {
-          view.goTo({
-            target: extent,
-            position: {
-              longitude: extent.center.x,
-              latitude: extent.center.y,
-              z: extent.center.z
-            },
-            heading: 356.82,
-            tilt: 78.61
-          })
+          if (isDesktopMode) {
+            view.goTo({
+              target: extent,
+              position: {
+                longitude: extent.center.x,
+                latitude: extent.center.y,
+                z: 314.88439
+              },
+              heading: 356.82,
+              tilt: 78.61
+            })
+          } else {
+            view.goTo({
+              position: {
+                longitude: -122.39899666,
+                latitude: 37.77940678,
+                z: 314.88439
+              },
+              heading: 356.82,
+              tilt: 78.61
+            })
+          }
         }
       }
     }
@@ -42,7 +58,10 @@ const LayerVisibilityControl: React.FC = () => {
         await layer.when()
         const extent = layer.fullExtent
         if (extent) {
-          view.goTo(extent)
+          await view.goTo(extent)
+          if (view.zoom < 3) {
+            view.zoom = 3
+          }
         }
       }
     }

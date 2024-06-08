@@ -40,8 +40,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
   )
 
   const { isDesktopMode } = useViewStore((state) => ({
-    isDesktopMode: state.isDesktopMode,
-    switchMapType: state.isDesktopMode
+    isDesktopMode: state.isDesktopMode
   }))
 
   useEffect(() => {
