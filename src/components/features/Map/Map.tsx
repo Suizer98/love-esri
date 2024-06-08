@@ -4,6 +4,8 @@ import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer'
 import SceneLayer from '@arcgis/core/layers/SceneLayer'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
+import Expand from '@arcgis/core/widgets/Expand'
+import Legend from '@arcgis/core/widgets/Legend'
 import { useEffect, useRef, useState } from 'react'
 
 import { useLayersStore } from '../../../store/useLayersStore'
@@ -21,6 +23,7 @@ const MapPort: React.FC = () => {
   const { layers } = useLayersStore()
 
   const viewRef = useRef<MapView | SceneView | null>(null)
+  const legendRef = useRef<__esri.Expand | null>(null)
   const { routeSteps, loading } = useRouting(viewRef)
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -75,6 +78,16 @@ const MapPort: React.FC = () => {
     view
       .when(() => {
         setIsMapAvailable(true)
+        const legendDiv = document.createElement('div')
+        legendDiv.style.maxWidth = '300px'
+
+        const legendExpand = new Expand({
+          view: view,
+          content: new Legend({ view: view }),
+          expanded: false
+        })
+        view.ui.add(legendExpand, 'bottom-left')
+        legendRef.current = legendExpand
       })
       .catch((error) => {
         console.error('Error loading view:', error)
@@ -82,6 +95,11 @@ const MapPort: React.FC = () => {
 
     return () => {
       if (viewRef.current) {
+        if (legendRef.current) {
+          viewRef.current.ui.remove(legendRef.current)
+          legendRef.current.destroy()
+          legendRef.current = null
+        }
         viewRef.current.destroy()
         viewRef.current = null
         setViewRef(null)
