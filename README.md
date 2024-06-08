@@ -4,9 +4,9 @@ A project to showcase how much I love ESRI by utilising their APIs. It is hostin
 
 ## ArcGIS Javascript SDK
 
-The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology.
+The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology. This project introduces switching between 3D scene and 2D map views. It also showcase the 3D visualisation of buildings and 2D wind flow layer.
 
-Api Used in this project:
+Api ussed in this project:
 
 1. Basemap
 2. Geocoding

@@ -116,7 +116,9 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                   fontWeight="bold"
                   color="blue.800"
                 >
-                  Nothing here...perhaps switch to Map Tab?
+                  Nothing here...
+                  <br />
+                  perhaps switch to Map Tab?
                 </Text>
               )}
             </>
