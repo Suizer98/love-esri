@@ -8,6 +8,7 @@ import Expand from '@arcgis/core/widgets/Expand'
 import Legend from '@arcgis/core/widgets/Legend'
 import { useEffect, useRef, useState } from 'react'
 
+import styles from '../../../MapPort.module.css'
 import { useLayersStore } from '../../../store/useLayersStore'
 import { useMapStore } from '../../../store/useMapStore'
 import MapComboBox from './MapComboBox'
@@ -79,7 +80,7 @@ const MapPort: React.FC = () => {
       .when(() => {
         setIsMapAvailable(true)
         const legendDiv = document.createElement('div')
-        legendDiv.style.maxWidth = '300px'
+        legendDiv.className = styles.legendContent
 
         const legendExpand = new Expand({
           view: view,
