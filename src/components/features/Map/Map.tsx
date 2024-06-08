@@ -9,14 +9,14 @@ import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol'
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
-import Search from '@arcgis/core/widgets/Search'
-import { Tooltip, useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
-import { createRoot } from 'react-dom/client'
 
 import { useMapStore } from '../../../store/useMapStore'
 import MapComboBox from './MapComboBox'
 import MapDirections from './MapDirections'
+import { createRecenterButton } from './MapRecenterButton'
+import { createSearchWidget } from './MapSearchWidget'
 
 const MapPort: React.FC = () => {
   const viewType = useMapStore((state) => state.mapType)
@@ -72,44 +72,8 @@ const MapPort: React.FC = () => {
 
     viewRef.current = view
 
-    const searchWidgetDiv = document.createElement('div')
-    searchWidgetDiv.id = 'searchWidgetDiv'
-    searchWidgetDiv.className = 'absolute top-4 left-2 p-2 z-10'
-    view.ui.add(searchWidgetDiv)
-
-    const searchWidget = new Search({
-      container: searchWidgetDiv,
-      view: view
-    })
-
-    searchWidget.on('search-complete', function () {
-      // Remove the docking functionality
-      view.popup.dockEnabled = false
-      view.popup.collapseEnabled = false
-    })
-
-    // Create and add the recenter button
-    const recenterButtonDiv = document.createElement('div')
-    recenterButtonDiv.className = 'recenter-button esri-widget--button esri-widget'
-    const tooltipContainer = document.createElement('div')
-    createRoot(tooltipContainer).render(
-      <Tooltip label="Recenter" bg="black" color="white">
-        <div
-          className="recenter-button esri-widget--button esri-widget"
-          style={{ cursor: 'pointer' }}
-        >
-          <span className="esri-icon esri-icon-globe"></span>
-        </div>
-      </Tooltip>
-    )
-    recenterButtonDiv.appendChild(tooltipContainer)
-    view.ui.add(recenterButtonDiv, 'bottom-left')
-
-    recenterButtonDiv.addEventListener('click', () => {
-      if (viewRef.current) {
-        viewRef.current.goTo({ center: [103.5, 1.5], zoom: 6, heading: 0, tilt: 0 })
-      }
-    })
+    createSearchWidget(view)
+    createRecenterButton(view)
 
     view
       .when(() => {
