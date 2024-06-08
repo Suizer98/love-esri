@@ -1,5 +1,5 @@
 import { HamburgerIcon } from '@chakra-ui/icons'
-import { Button, Flex, HStack, Heading, Spacer, Text, Tooltip, useToast } from '@chakra-ui/react'
+import { Button, Flex, HStack, Spacer, Text, Tooltip, useToast } from '@chakra-ui/react'
 import { useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
@@ -74,9 +74,19 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
         <Button variant="link" color="white" onClick={onToggleSidebar}>
           <HamburgerIcon />
         </Button>
-        <Heading as={RouterLink} to="/" variant="link" size="md" color="white">
+        <Text
+          className="esri-widget"
+          bg="#370B6D"
+          fontSize="large"
+          fontWeight="bold"
+          as={RouterLink}
+          to="/"
+          variant="link"
+          size="md"
+          color="white"
+        >
           {`</>`} Love ESRI
-        </Heading>
+        </Text>
         <LoveEsriMainBarRoute />
       </HStack>
       <Spacer />
@@ -84,6 +94,8 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
         <HStack spacing={4}>
           <Tooltip label={user.username} bg="black">
             <Text
+              className="esri-widget"
+              bg="#370B6D"
               maxW={isDesktopMode ? '200px' : '50px'}
               isTruncated
               title={user.username}
@@ -92,12 +104,24 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
               {user.username}
             </Text>
           </Tooltip>
-          <Button variant="link" onClick={handleSignOut} color="white">
+          <Button
+            className="esri-widget"
+            bg="#370B6D"
+            variant="link"
+            onClick={handleSignOut}
+            color="white"
+          >
             Sign Out
           </Button>
         </HStack>
       ) : (
-        <Button variant="link" onClick={handleSignIn} color="white">
+        <Button
+          className="esri-widget"
+          bg="#370B6D"
+          variant="link"
+          onClick={handleSignIn}
+          color="white"
+        >
           Sign In
         </Button>
       )}

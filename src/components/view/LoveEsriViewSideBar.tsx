@@ -59,7 +59,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
           {isVisible && (
             <>
               <LoveEsriSideBarRoute />
-              <Text fontWeight="bold" color="blue.800">
+              <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
                 Switch View Type
               </Text>
               <Tooltip label="Switch between 2D or 3D Map" bg="black" placement="top">
@@ -80,7 +80,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                   </RadioGroup>
                 </Box>
               </Tooltip>
-              <Text fontWeight="bold" color="blue.800">
+              <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
                 Toggle route mode
               </Text>
               <Tooltip
