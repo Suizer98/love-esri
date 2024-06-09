@@ -11,6 +11,8 @@ const Playground = () => {
   useEffect(() => {
     const initializeMap = () => {
       const token = IdentityManager.findCredential('https://www.arcgis.com/sharing').token
+
+      if (!token) return null
       const authentication = ApiKeyManager.fromKey(token)
 
       const map = new Map({
