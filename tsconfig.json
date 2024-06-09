@@ -22,7 +22,9 @@
 
     "paths": {
       "@arcgis/core/*": ["./node_modules/@arcgis/core/*"]
-    }
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
