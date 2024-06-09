@@ -1,4 +1,5 @@
 import Graphic from '@arcgis/core/Graphic'
+import IdentityManager from '@arcgis/core/identity/IdentityManager'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import * as route from '@arcgis/core/rest/route'
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet'
@@ -31,8 +32,10 @@ export const useRouting = (
       routeLayerRef.current = routeLayer
       viewRef.current?.map.add(routeLayer)
 
+      const token = IdentityManager.findCredential('https://www.arcgis.com/sharing').token
+
       const routeParams = new RouteParameters({
-        apiKey: import.meta.env.VITE_ESRI_API,
+        apiKey: token,
         stops: new FeatureSet({
           features: []
         }),
