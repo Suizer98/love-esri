@@ -136,7 +136,12 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
           ) : (
             (!isVisible || isDesktopMode) && <Route path="/" element={<Warning />} />
           )}
-          {(!isVisible || isDesktopMode) && <Route path="/playground" element={<Playground />} />}
+          {user ? (
+            <Route path="/playground" element={<Playground />} />
+          ) : (
+            (!isVisible || isDesktopMode) && <Route path="/playground" element={<Warning />} />
+          )}
+          {/* {(!isVisible || isDesktopMode) && <Route path="/playground" element={<Playground />} />} */}
           {(!isVisible || isDesktopMode) && <Route path="/about" element={<About />} />}
         </Routes>
       </Box>
