@@ -2,7 +2,7 @@
 
 A project to showcase how I love ESRI products by utilising their JavaScript SDK APIs. It is hosting on [loveesri.netlify.app/](loveesri.netlify.app/) as single tier app.
 
-Tech stacks: ![Tech stacks](https://skillicons.dev/icons?i=vite,ts,react,netlify,tailwindcss,docker,ubuntu,npm)
+Tech stacks: ![Tech stacks](https://skillicons.dev/icons?i=vite,ts,react,tailwindcss,css,html,docker,ubuntu,bash,npm,netlify)
 
 ## ArcGIS Javascript SDK
 
