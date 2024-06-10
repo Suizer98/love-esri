@@ -2,6 +2,8 @@
 
 A project to showcase how I love ESRI products by utilising their JavaScript SDK APIs. It is hosting on [loveesri.netlify.app/](loveesri.netlify.app/) as single tier app.
 
+Tech stacks: ![Tech stacks](https://skillicons.dev/icons?i=vite,ts,react,netlify,tailwindcss,docker,ubuntu,npm)
+
 ## ArcGIS Javascript SDK
 
 The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology. This project introduces switching between 3D scene and 2D map views. It also showcase the 3D visualisation of buildings and 2D wind flow layer.
