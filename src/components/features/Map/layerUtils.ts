@@ -143,7 +143,8 @@ async function loadSatelliteData(satelliteLayer: GraphicsLayer) {
         const graphic = new Graphic({
           geometry: satelliteLoc,
           symbol: new PictureMarkerSymbol({
-            url: 'https://developers.arcgis.com/javascript/latest/sample-code/satellites-3d/live/satellite.png',
+            // url: 'https://developers.arcgis.com/javascript/latest/sample-code/satellites-3d/live/satellite.png',
+            url: '/satellite.png',
             width: '48px',
             height: '48px'
           }),
