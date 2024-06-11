@@ -1,12 +1,12 @@
 version: '3.9'
 
 services:
-  nextjsazure:
+  love-esri:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: npm run dev
+    command: npm run dev -- --host
     volumes:
       - ./:/usr/local/app
     ports:
-      - '3000:3000'
+      - '3001:3001'

@@ -50,6 +50,8 @@ To fix all formatting and linting using `prettier`:
 ```
 npm run style-check
 npm run style-format
+docker exec -it love-esri-love-esri-1 npm run style-format
+
 ```
 
 ### Check if build error exists?

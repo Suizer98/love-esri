@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /usr/local
 
-COPY package.json package-lock.json* .npmrc .
+COPY . .
 
 RUN npm install && npm cache clean --force
 ENV PATH=/usr/local/node_modules/.bin:$PATH
