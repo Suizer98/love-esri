@@ -1,0 +1,6 @@
+# Netlify Redirects
+# More information about Netlify redirects:
+# https://docs.netlify.com/routing/redirects/
+
+# Redirect all requests to index.html
+/*    /index.html   200
