@@ -75,6 +75,13 @@ const LayerVisibilityControl: React.FC = () => {
         updateCameraPosition3D(layerName)
       } else if (layerName === '2D Flow' && viewRef && !layer.visible) {
         updateCameraPosition2D(layerName)
+      } else if (layerName === 'Satellites' && viewRef) {
+        const recenterButton = document.querySelector(
+          '.recenter-button.esri-widget--button.esri-widget'
+        )
+        if (recenterButton) {
+          recenterButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+        }
       }
     }
   }

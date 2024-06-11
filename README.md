@@ -1,18 +1,22 @@
 # Love ESRI
 
-A project to showcase how I love ESRI products by utilising their JavaScript SDK APIs. It is hosting on [loveesri.netlify.app/](loveesri.netlify.app/) as single tier app.
+A project to showcase how I love ESRI products by utilising their JavaScript SDK APIs. It is hosting on [loveesri.netlify.app/](https://loveesri.netlify.app/) as a single tier app.
 
-Tech stacks: ![Tech stacks](https://skillicons.dev/icons?i=vite,ts,react,tailwindcss,css,html,docker,ubuntu,bash,npm,netlify)
+Tech stacks:
+
+![Tech stacks](https://skillicons.dev/icons?i=vite,ts,react,tailwindcss,css,html,docker,ubuntu,bash,npm,netlify)
 
 ## ArcGIS Javascript SDK
 
-The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology. This project introduces switching between 3D scene and 2D map views. It also showcase the 3D visualisation of buildings and 2D wind flow layer.
+The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology.
 
-Api used in this project:
+Features introduced in this project:
 
-1. Basemap
-2. Geocoding
-3. Routing
+1. Switching between 3D scene and 2D map views.
+2. Layer controls such as 3D buildings and 2D wind flow layer.
+3. Satellite locations/orbits visualisation
+4. Geocoding for address searching tool
+5. Routing between multiple destinations
 
 ## Going into developments
 
