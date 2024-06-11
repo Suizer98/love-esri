@@ -1,5 +1,11 @@
+import Graphic from '@arcgis/core/Graphic'
+import PopupTemplate from '@arcgis/core/PopupTemplate'
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer'
 import SceneLayer from '@arcgis/core/layers/SceneLayer'
+import esriRequest from '@arcgis/core/request'
+import { PictureMarkerSymbol } from '@arcgis/core/symbols'
+import * as satellite from 'satellite.js'
 
 import { useLayersStore } from '../../../store/useLayersStore'
 
@@ -17,7 +23,6 @@ export const addLayerRecursively = () => {
       }
       addLayer(layer)
     }
-    // Check if the 2D Flow layer has already been added
     if (!layers.some((layer) => layer.name === '2D Flow')) {
       const layer = {
         name: '2D Flow',
@@ -44,6 +49,15 @@ export const addLayerRecursively = () => {
       }
       addLayer(layer)
     }
+    if (!layers.some((layer) => layer.name === 'Satellites')) {
+      const layer = {
+        name: 'Satellites',
+        visible: true,
+        type: '3D'
+      }
+      addLayer(layer)
+    }
+
     layerAddedRef.current = true
   }
 }
@@ -75,10 +89,115 @@ export const addLayersToMap = (
         })
         view.map.add(layerInstance)
       }
+    } else if (layer.type === 'GraphicsLayer' && layer.name === 'Satellites') {
+      layerInstance = view.map.findLayerById(layer.name) as GraphicsLayer
+      if (!layerInstance) {
+        layerInstance = new GraphicsLayer({
+          id: layer.name
+        })
+        view.map.add(layerInstance)
+
+        // Load satellite data and add to the layer
+        loadSatelliteData(layerInstance)
+      }
     }
 
     if (layerInstance) {
       layerInstance.visible = layer.visible
     }
   })
+}
+
+async function loadSatelliteData(satelliteLayer: GraphicsLayer) {
+  const url =
+    'https://developers.arcgis.com/javascript/latest/sample-code/satellites-3d/live/brightest.txt'
+
+  try {
+    const response = await esriRequest(url, { responseType: 'text' })
+    const txt = response.data
+
+    const lines = txt.split('\n')
+    const count = Math.floor(lines.length / 3)
+
+    for (let i = 0; i < count; i++) {
+      const commonName = lines[i * 3 + 0]
+      const line1 = lines[i * 3 + 1]
+      const line2 = lines[i * 3 + 2]
+      const time = Date.now()
+
+      const satelliteLoc = getSatelliteLocation(new Date(time), line1, line2)
+      if (satelliteLoc) {
+        const template = new PopupTemplate({
+          title: '{name}',
+          content: 'Launch number {number} of {year}',
+          actions: [
+            {
+              title: 'Show Satellite Track',
+              id: 'track',
+              className: 'esri-icon-globe',
+              type: 'button'
+            }
+          ]
+        })
+
+        const graphic = new Graphic({
+          geometry: satelliteLoc,
+          symbol: new PictureMarkerSymbol({
+            url: 'https://developers.arcgis.com/javascript/latest/sample-code/satellites-3d/live/satellite.png',
+            width: '48px',
+            height: '48px'
+          }),
+          attributes: {
+            name: commonName,
+            year: new Date().getFullYear(),
+            number: i,
+            line1: line1,
+            line2: line2
+          },
+          popupTemplate: template
+        })
+
+        satelliteLayer.add(graphic)
+      }
+    }
+  } catch (error) {
+    console.error('Error loading satellite data:', error)
+  }
+}
+
+const getSatelliteLocation = (date: Date, line1: string, line2: string) => {
+  const satrec = satellite.twoline2satrec(line1, line2)
+  const position_and_velocity = satellite.propagate(satrec, date)
+  const position_eci = position_and_velocity.position
+
+  const gmst = satellite.gstime(date)
+
+  if (!position_eci || position_eci === true) {
+    return null
+  }
+
+  const position_gd = satellite.eciToGeodetic(position_eci, gmst)
+
+  let longitude = position_gd.longitude
+  const latitude = position_gd.latitude
+  const height = position_gd.height
+
+  if (isNaN(longitude) || isNaN(latitude) || isNaN(height)) {
+    return null
+  }
+
+  const rad2deg = 180 / Math.PI
+  while (longitude < -Math.PI) {
+    longitude += 2 * Math.PI
+  }
+  while (longitude > Math.PI) {
+    longitude -= 2 * Math.PI
+  }
+
+  return {
+    type: 'point',
+    x: rad2deg * longitude,
+    y: rad2deg * latitude,
+    z: height * 1000
+  } as __esri.GeometryProperties
 }

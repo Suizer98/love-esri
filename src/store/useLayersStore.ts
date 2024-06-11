@@ -3,8 +3,8 @@ import create from 'zustand'
 // Define the state interface for layers
 interface Layer {
   name: string
-  url: string
   visible: boolean
+  url?: string
   renderer?: any
   effect?: string
   type?: string
