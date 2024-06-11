@@ -1,7 +1,4 @@
-import Basemap from '@arcgis/core/Basemap'
 import Map from '@arcgis/core/Map'
-import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer'
-import SceneLayer from '@arcgis/core/layers/SceneLayer'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import Expand from '@arcgis/core/widgets/Expand'
@@ -14,7 +11,7 @@ import MapComboBox from './MapComboBox'
 import MapDirections from './MapDirections'
 import { createRecenterButton } from './MapRecenterButton'
 import { createSearchWidget } from './MapSearchWidget'
-import { addLayerRecursively } from './layerUtils'
+import { addLayerRecursively, addLayersToMap } from './layerUtils'
 import { useRouting } from './useRouting'
 
 const MapPort: React.FC = () => {
@@ -108,55 +105,9 @@ const MapPort: React.FC = () => {
   useEffect(() => {
     const view = useMapStore.getState().viewRef
     if (view) {
-      layers.forEach((layer) => {
-        let layerInstance
-        if (viewType === '3D' && layer.name === '3D Buildings') {
-          layerInstance = view.map.findLayerById(layer.name) as SceneLayer
-          if (!layerInstance) {
-            layerInstance = new SceneLayer({
-              id: layer.name,
-              url: layer.url
-            })
-            view.map.add(layerInstance)
-          }
-        } else if (viewType === '2D' && layer.name === '2D Flow') {
-          layerInstance = view.map.findLayerById(layer.name) as ImageryTileLayer
-          if (!layerInstance) {
-            layerInstance = new ImageryTileLayer({
-              id: layer.name,
-              url: layer.url,
-              renderer: layer.renderer,
-              effect: layer.effect
-            })
-            view.map.add(layerInstance)
-          }
-        }
-
-        if (layerInstance) {
-          layerInstance.visible = layer.visible
-        }
-      })
+      addLayersToMap(view, viewType, layers)
     }
   }, [layers, viewType])
-
-  const updateBasemapStyle = (basemapId: string) => {
-    if (viewRef.current) {
-      const newBasemap = new Basemap({
-        style: {
-          id: basemapId
-        }
-      })
-
-      newBasemap
-        .load()
-        .then(() => {
-          viewRef.current!.map.basemap = newBasemap
-        })
-        .catch((error) => {
-          console.error('Error loading basemap:', error)
-        })
-    }
-  }
 
   return (
     <>
@@ -168,7 +119,7 @@ const MapPort: React.FC = () => {
           setIsExpanded={setIsExpanded}
         />
       </div>
-      <MapComboBox updateBasemapStyle={updateBasemapStyle} />
+      <MapComboBox />
     </>
   )
 }

@@ -1,4 +1,6 @@
-// src/utils/layerUtils.ts
+import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer'
+import SceneLayer from '@arcgis/core/layers/SceneLayer'
+
 import { useLayersStore } from '../../../store/useLayersStore'
 
 export const addLayerRecursively = () => {
@@ -44,4 +46,39 @@ export const addLayerRecursively = () => {
     }
     layerAddedRef.current = true
   }
+}
+
+export const addLayersToMap = (
+  view: __esri.MapView | __esri.SceneView,
+  viewType: string,
+  layers: any[]
+) => {
+  layers.forEach((layer) => {
+    let layerInstance
+    if (viewType === '3D' && layer.name === '3D Buildings') {
+      layerInstance = view.map.findLayerById(layer.name) as SceneLayer
+      if (!layerInstance) {
+        layerInstance = new SceneLayer({
+          id: layer.name,
+          url: layer.url
+        })
+        view.map.add(layerInstance)
+      }
+    } else if (viewType === '2D' && layer.name === '2D Flow') {
+      layerInstance = view.map.findLayerById(layer.name) as ImageryTileLayer
+      if (!layerInstance) {
+        layerInstance = new ImageryTileLayer({
+          id: layer.name,
+          url: layer.url,
+          renderer: layer.renderer,
+          effect: layer.effect
+        })
+        view.map.add(layerInstance)
+      }
+    }
+
+    if (layerInstance) {
+      layerInstance.visible = layer.visible
+    }
+  })
 }

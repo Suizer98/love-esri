@@ -1,16 +1,13 @@
 import { Box, Checkbox, Radio, RadioGroup, Stack, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
 import { useMapStore } from '../../store/useMapStore'
 import { useViewStore } from '../../store/useViewStore'
-import About from '../features/About'
-import MapPort from '../features/Map/Map'
-import Playground from '../features/Playground/Playground'
-import Warning from '../features/Warning'
 import LayerVisibilityControl from './LayerVisibilityControl'
+import { LoveEsriMainPort } from './LoveEsriMainPort'
 import { LoveEsriPopover } from './LoveEsriPopover'
 import { LoveEsriSideBarRoute } from './LoveEsriRoute'
 
@@ -19,7 +16,7 @@ interface LoveEsriViewSideBarProps {
 }
 
 export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
-  const { user, checkExistingSession } = useAuthStore(
+  const { checkExistingSession } = useAuthStore(
     (state) => ({
       user: state.user,
       signIn: state.signIn,
@@ -50,6 +47,12 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
   useEffect(() => {
     checkExistingSession()
   }, [checkExistingSession])
+
+  useEffect(() => {
+    if (routingMode == true) {
+      toggleRoutingMode()
+    }
+  }, [mapType])
 
   return (
     <Box display="flex" width="100%" height="100%">
@@ -125,26 +128,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
           )}
         </VStack>
       </Box>
-      <Box
-        flex="1"
-        transition="width 0.3s ease"
-        width={isVisible ? { base: '0%', md: '80%' } : '100%'}
-      >
-        <Routes>
-          {user ? (
-            <Route path="/" element={<MapPort />} />
-          ) : (
-            (!isVisible || isDesktopMode) && <Route path="/" element={<Warning />} />
-          )}
-          {user ? (
-            <Route path="/playground" element={<Playground />} />
-          ) : (
-            (!isVisible || isDesktopMode) && <Route path="/playground" element={<Warning />} />
-          )}
-          {/* {(!isVisible || isDesktopMode) && <Route path="/playground" element={<Playground />} />} */}
-          {(!isVisible || isDesktopMode) && <Route path="/about" element={<About />} />}
-        </Routes>
-      </Box>
+      <LoveEsriMainPort isVisible={isVisible} isDesktopMode={isDesktopMode} />
     </Box>
   )
 }

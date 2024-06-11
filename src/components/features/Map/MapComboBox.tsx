@@ -1,3 +1,4 @@
+import Basemap from '@arcgis/core/Basemap'
 import { Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 
@@ -5,13 +6,29 @@ import { useMapStore } from '../../../store/useMapStore'
 import { useViewStore } from '../../../store/useViewStore'
 import { basemapItems } from './constants'
 
-interface MapComboBoxProps {
-  updateBasemapStyle: (basemapId: string) => void
-}
-
-const MapComboBox: React.FC<MapComboBoxProps> = ({ updateBasemapStyle }) => {
+const MapComboBox: React.FC = () => {
   const { isSidebarVisible, isDesktopMode } = useViewStore()
   const { isMapAvailable } = useMapStore()
+  const viewRef = useMapStore((state) => state.viewRef)
+
+  const updateBasemapStyle = (basemapId: string) => {
+    if (viewRef) {
+      const newBasemap = new Basemap({
+        style: {
+          id: basemapId
+        }
+      })
+
+      newBasemap
+        .load()
+        .then(() => {
+          viewRef.map.basemap = newBasemap
+        })
+        .catch((error) => {
+          console.error('Error loading basemap:', error)
+        })
+    }
+  }
 
   useEffect(() => {
     const basemapStylesDiv = document.getElementById('basemapStyles')
