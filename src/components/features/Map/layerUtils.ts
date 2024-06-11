@@ -53,7 +53,7 @@ export const addLayerRecursively = () => {
       const layer = {
         name: 'Satellites',
         visible: true,
-        type: '3D'
+        type: 'GraphicsLayer'
       }
       addLayer(layer)
     }
