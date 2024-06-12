@@ -126,6 +126,7 @@ async function loadSatelliteData(satelliteLayer: GraphicsLayer) {
       const time = Date.now()
 
       const satelliteLoc = getSatelliteLocation(new Date(time), line1, line2)
+      // console.log(satelliteLoc)
       if (satelliteLoc) {
         const template = new PopupTemplate({
           title: '{name}',

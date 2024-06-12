@@ -5,9 +5,11 @@ import { shallow } from 'zustand/shallow'
 
 import { useAuthStore } from '../../store/useAuthStore'
 import { useMapStore } from '../../store/useMapStore'
+import { usePlaygroundStore } from '../../store/usePlaygroundStore'
 import { useViewStore } from '../../store/useViewStore'
 import LayerVisibilityControl from './LayerVisibilityControl'
 import { LoveEsriMainPort } from './LoveEsriMainPort'
+import LoveEsriPlaygroundPoints from './LoveEsriPlaygroundPoints'
 import { LoveEsriPopover } from './LoveEsriPopover'
 import { LoveEsriSideBarRoute } from './LoveEsriRoute'
 
@@ -37,12 +39,22 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     shallow
   )
 
+  const { isPMapAvailable, pointMode, togglePointMode } = usePlaygroundStore(
+    (state) => ({
+      pointMode: state.pointMode,
+      isPMapAvailable: state.isPMapAvailable,
+      togglePointMode: state.togglePointMode
+    }),
+    shallow
+  )
+
   const { isDesktopMode } = useViewStore((state) => ({
     isDesktopMode: state.isDesktopMode
   }))
 
   const location = useLocation()
   const isMapRoute = location.pathname === '/'
+  const isPlayGroundRoute = location.pathname === '/playground'
 
   useEffect(() => {
     checkExistingSession()
@@ -53,6 +65,12 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
       toggleRoutingMode()
     }
   }, [mapType])
+
+  useEffect(() => {
+    if (!isPlayGroundRoute && pointMode) {
+      togglePointMode()
+    }
+  }, [isMapRoute, isPlayGroundRoute])
 
   return (
     <Box display="flex" width="100%" height="100%">
@@ -111,7 +129,29 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                   <LayerVisibilityControl />
                 </>
               )}
-              {!isMapRoute && (
+              {isPlayGroundRoute && (
+                <>
+                  <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
+                    Add points
+                  </Text>
+                  <Tooltip label="Create points" bg="black" placement="top">
+                    <Box bg="white" p={4} borderRadius="md" boxShadow="md">
+                      <Checkbox
+                        isChecked={pointMode}
+                        disabled={!isPMapAvailable}
+                        onChange={togglePointMode}
+                      >
+                        Enable Point adding mode
+                      </Checkbox>
+                    </Box>
+                  </Tooltip>
+                  <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">
+                    Points
+                  </Text>
+                  <LoveEsriPlaygroundPoints />
+                </>
+              )}
+              {!isMapRoute && !isPlayGroundRoute && (
                 <Text
                   className="esri-widget"
                   fontSize="large"
