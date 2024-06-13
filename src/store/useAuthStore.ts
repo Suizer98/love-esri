@@ -26,6 +26,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     IdentityManager.registerOAuthInfos([info])
 
+    // If not log in, use api key defined in env, this can be removed anytime
     try {
       await IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
       // const portal = new Portal()

@@ -4,6 +4,9 @@ import { createRoot } from 'react-dom/client'
 import { usePlaygroundStore } from '../../../store/usePlaygroundStore'
 import { initializeTimeSlider, loadSatelliteData } from './PlaygroundSatellites'
 
+// For now this is a clunky way to reset camera position
+// Because of how view.goTo doesnt reposition us to a view that we can see MEO satellites
+// as they are too high altitudes
 export const createRecenterButton = (
   view: __esri.MapView | __esri.SceneView,
   initialCamera: any,
@@ -110,6 +113,8 @@ export const createRecenterButton2 = (
     })
   })
 }
+
+// The original recenter button
 // import { Tooltip } from '@chakra-ui/react'
 // import { createRoot } from 'react-dom/client'
 

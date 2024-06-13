@@ -8,6 +8,8 @@ Tech stacks:
 
 ## ArcGIS Javascript SDK
 
+### Description
+
 The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology. Below are the features introduced in this project.
 
 `Map Tab`:
@@ -22,6 +24,10 @@ The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library 
 
 1. Adding points on map for user preferences and fun
 2. Visualising time series MEO satellite positions and its orbit pattern from RINEX navigation file. (Although I am using mocked data here)
+
+### Disclaimer regarding the free usage limitations
+
+Only free tier location services are available at the moment and their usage are limited. You are encouraged to login using your own account, the default user is only to ease demostration purpose and it can be remove anytime soon.
 
 ## Going into developments
 
