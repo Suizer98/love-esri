@@ -2,10 +2,13 @@ import { Tooltip } from '@chakra-ui/react'
 import { createRoot } from 'react-dom/client'
 
 import { usePlaygroundStore } from '../../../store/usePlaygroundStore'
+import { initializeTimeSlider, loadSatelliteData } from './PlaygroundSatellites'
 
 export const createRecenterButton = (
   view: __esri.MapView | __esri.SceneView,
-  initialCamera: any
+  initialCamera: any,
+  satellitesLayer: any,
+  pointLayer: any
 ) => {
   const { setViewRef, setIsPMapAvailable } = usePlaygroundStore.getState()
 
@@ -50,14 +53,25 @@ export const createRecenterButton = (
 
     newView.when(() => {
       setIsPMapAvailable(true)
-      createRecenterButton2(newView, initialCamera)
+      createRecenterButton2(newView, initialCamera, satellitesLayer, pointLayer)
+
+      // Load satellite data and initialize the time slider
+      loadSatelliteData()
+        .then((data) => {
+          initializeTimeSlider(newView, satellitesLayer, data)
+        })
+        .catch((error) => {
+          console.error('Error loading satellite data:', error)
+        })
     })
   })
 }
 
 export const createRecenterButton2 = (
   view: __esri.MapView | __esri.SceneView,
-  initialCamera: any
+  initialCamera: any,
+  satellitesLayer: any,
+  pointLayer: any
 ) => {
   const { setViewRef, setIsPMapAvailable } = usePlaygroundStore.getState()
 
@@ -102,7 +116,16 @@ export const createRecenterButton2 = (
 
     newView.when(() => {
       setIsPMapAvailable(true)
-      createRecenterButton(newView, initialCamera)
+      createRecenterButton(newView, initialCamera, satellitesLayer, pointLayer)
+
+      // Load satellite data and initialize the time slider
+      loadSatelliteData()
+        .then((data) => {
+          initializeTimeSlider(newView, satellitesLayer, data)
+        })
+        .catch((error) => {
+          console.error('Error loading satellite data:', error)
+        })
     })
   })
 }

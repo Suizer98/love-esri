@@ -1,18 +1,14 @@
 import Graphic from '@arcgis/core/Graphic'
 import Map from '@arcgis/core/Map'
-import TimeExtent from '@arcgis/core/TimeExtent'
-import TimeInterval from '@arcgis/core/TimeInterval'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import { SimpleMarkerSymbol } from '@arcgis/core/symbols'
 import SceneView from '@arcgis/core/views/SceneView'
-import TimeSlider from '@arcgis/core/widgets/TimeSlider'
-// import Search from '@arcgis/core/widgets/Search'
 import { useEffect, useRef } from 'react'
 
 import { usePlaygroundStore } from '../../../store/usePlaygroundStore'
 import { createRecenterButton } from './MapRecenterButton'
 import PlaygroundPoint from './PlaygroundPoint'
-import { loadSatelliteData, updateSatelliteLayer } from './PlaygroundSatellites'
+import { initializeTimeSlider, loadSatelliteData } from './PlaygroundSatellites'
 
 const Playground: React.FC = () => {
   const { setViewRef, mapType, setIsPMapAvailable, addedPoints } = usePlaygroundStore()
@@ -65,43 +61,13 @@ const Playground: React.FC = () => {
     view
       .when(() => {
         setIsPMapAvailable(true)
-        createRecenterButton(view, initialCamera)
+        createRecenterButton(view, initialCamera, satellitesLayer, pointsLayer)
         updatePointsLayer(pointsLayer)
 
-        // Load satellite data
+        // Load satellite data and initialize the time slider
         loadSatelliteData()
           .then((data) => {
-            if (data.length > 0) {
-              // Initialize the TimeSlider
-              const timeSlider = new TimeSlider({
-                container: 'timeSliderDiv',
-                view: view,
-                timeVisible: true,
-                loop: true,
-                fullTimeExtent: new TimeExtent({
-                  start: new Date(Date.UTC(2018, 4, 1)),
-                  end: new Date(Date.UTC(2018, 4, 6))
-                }),
-                stops: {
-                  interval: new TimeInterval({
-                    value: 1,
-                    unit: 'days'
-                  })
-                }
-              })
-
-              view.ui.add(timeSlider, 'bottom-left')
-
-              // Update satellite layer on time extent change
-              timeSlider.watch('timeExtent', (newTimeExtent) => {
-                updateSatelliteLayer(satellitesLayer, data, newTimeExtent)
-              })
-
-              // Initial update for satellite layer
-              updateSatelliteLayer(satellitesLayer, data, timeSlider.fullTimeExtent)
-            } else {
-              console.error('No data loaded.')
-            }
+            initializeTimeSlider(view, satellitesLayer, data)
           })
           .catch((error) => {
             console.error('Error loading satellite data:', error)

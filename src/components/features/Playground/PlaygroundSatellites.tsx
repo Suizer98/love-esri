@@ -1,7 +1,10 @@
 import Graphic from '@arcgis/core/Graphic'
 import PopupTemplate from '@arcgis/core/PopupTemplate'
+import TimeExtent from '@arcgis/core/TimeExtent'
+import TimeInterval from '@arcgis/core/TimeInterval'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import { PictureMarkerSymbol } from '@arcgis/core/symbols'
+import TimeSlider from '@arcgis/core/widgets/TimeSlider'
 import * as d3 from 'd3'
 
 // Load both CSV files and combine the data
@@ -96,4 +99,39 @@ const parseScientific = (value: string): number => {
     return parseFloat(value)
   }
   return NaN
+}
+
+export const initializeTimeSlider = (
+  view: __esri.SceneView,
+  satellitesLayer: GraphicsLayer,
+  data: any[]
+) => {
+  if (data.length > 0) {
+    const timeSlider = new TimeSlider({
+      container: 'timeSliderDiv',
+      view: view,
+      timeVisible: true,
+      loop: true,
+      fullTimeExtent: new TimeExtent({
+        start: new Date(Date.UTC(2018, 4, 1)),
+        end: new Date(Date.UTC(2018, 4, 6))
+      }),
+      stops: {
+        interval: new TimeInterval({
+          value: 1,
+          unit: 'days'
+        })
+      }
+    })
+
+    view.ui.add(timeSlider, 'bottom-left')
+
+    timeSlider.watch('timeExtent', (newTimeExtent) => {
+      updateSatelliteLayer(satellitesLayer, data, newTimeExtent)
+    })
+
+    updateSatelliteLayer(satellitesLayer, data, timeSlider.fullTimeExtent)
+  } else {
+    console.error('No data loaded.')
+  }
 }
