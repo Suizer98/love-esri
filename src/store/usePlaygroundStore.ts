@@ -1,4 +1,3 @@
-import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import create from 'zustand'
 
@@ -10,8 +9,8 @@ interface PlaygroundState {
   togglePointMode: () => void
   isPMapAvailable: boolean
   setIsPMapAvailable: (available: boolean) => void
-  viewRef: MapView | SceneView | null
-  setViewRef: (view: MapView | SceneView | null) => void
+  viewRef: SceneView | null
+  setViewRef: (view: SceneView | null) => void
   addedPoints: any[]
   setAddedPoints: (points: any[] | ((prevPoints: any[]) => any[])) => void
 }

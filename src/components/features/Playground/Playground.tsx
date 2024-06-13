@@ -1,15 +1,32 @@
+import Graphic from '@arcgis/core/Graphic'
 import Map from '@arcgis/core/Map'
-import MapView from '@arcgis/core/views/MapView'
+import PopupTemplate from '@arcgis/core/PopupTemplate'
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
+import { PictureMarkerSymbol } from '@arcgis/core/symbols'
 import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
+import * as d3 from 'd3'
 import { useEffect, useRef } from 'react'
 
 import { usePlaygroundStore } from '../../../store/usePlaygroundStore'
+import { createRecenterButton } from './MapRecenterButton'
 import PlaygroundPoint from './PlaygroundPoint'
 
-const Playground = () => {
+const Playground: React.FC = () => {
   const { setViewRef, mapType, setIsPMapAvailable } = usePlaygroundStore()
-  const viewRef = useRef<MapView | SceneView | null>(null)
+  const viewRef = useRef<SceneView | null>(null)
+  const initialCamera = {
+    position: {
+      x: -100.39899666,
+      y: 37.77940678,
+      z: 100000000, // Ensure the camera is high enough to see the points
+      head: 0,
+      tilt: 0,
+      spatialReference: {
+        wkid: 4326
+      }
+    }
+  }
 
   useEffect(() => {
     setIsPMapAvailable(false)
@@ -21,13 +38,13 @@ const Playground = () => {
 
     const viewDiv = document.getElementById('viewDiv') as HTMLDivElement
 
-    let view: MapView | SceneView
+    let view: SceneView
 
     view = new SceneView({
       container: viewDiv,
       map: map,
-      zoom: 3,
-      center: [-100.39899666, 37.77940678],
+      zoom: 1,
+      camera: initialCamera,
       ui: {
         components: []
       }
@@ -41,9 +58,14 @@ const Playground = () => {
     })
     view.ui.add(search, 'top-right')
 
+    const satellitesLayer = new GraphicsLayer({ id: 'Satellites' })
+    map.add(satellitesLayer)
+
     view
       .when(() => {
         setIsPMapAvailable(true)
+        loadSatelliteData(satellitesLayer)
+        createRecenterButton(view, initialCamera)
       })
       .catch((error) => {
         console.error('Error loading view:', error)
@@ -56,7 +78,72 @@ const Playground = () => {
         setViewRef(null)
       }
     }
-  }, [mapType, setViewRef, setIsPMapAvailable])
+  }, [mapType, setViewRef])
+
+  const loadSatelliteData = async (satelliteLayer: GraphicsLayer) => {
+    const url = '/rinex210.csv'
+
+    try {
+      const data = await d3.csv(url)
+
+      data.forEach((d: any, i: any) => {
+        const commonName = `Satellite ${d.Sat}`
+        const latitude = parseScientific(d.Lat)
+        const longitude = parseScientific(d.Lon)
+        const altitude = parseScientific(d.Alt)
+
+        if (!isNaN(latitude) && !isNaN(longitude) && !isNaN(altitude)) {
+          const satelliteLoc = {
+            type: 'point',
+            x: longitude,
+            y: latitude,
+            z: altitude
+          } as __esri.GeometryProperties
+
+          const template = new PopupTemplate({
+            title: '{name}',
+            content: 'Satellite G{number} with Altitude {altitude}',
+            actions: [
+              {
+                title: 'Show Satellite Track',
+                id: 'track',
+                className: 'esri-icon-globe',
+                type: 'button'
+              }
+            ]
+          })
+
+          const graphic = new Graphic({
+            geometry: satelliteLoc,
+            symbol: new PictureMarkerSymbol({
+              url: '/satellite.png',
+              width: '48px',
+              height: '48px'
+            }),
+            attributes: {
+              name: commonName,
+              number: i,
+              altitude: altitude
+            },
+            popupTemplate: template
+          })
+
+          satelliteLayer.add(graphic)
+        }
+      })
+    } catch (error) {
+      console.error('Error loading satellite data:', error)
+    }
+  }
+
+  const parseScientific = (value: string): number => {
+    if (!value) return NaN
+    const scientificNotationRegex = /^-?\d+(\.\d+)?(e[+-]?\d+)?$/i
+    if (scientificNotationRegex.test(value)) {
+      return parseFloat(value)
+    }
+    return NaN
+  }
 
   return (
     <div style={{ height: '100%', width: '100%' }}>
