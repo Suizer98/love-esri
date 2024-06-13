@@ -2,7 +2,7 @@ import Graphic from '@arcgis/core/Graphic'
 import Map from '@arcgis/core/Map'
 import PopupTemplate from '@arcgis/core/PopupTemplate'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
-import { PictureMarkerSymbol } from '@arcgis/core/symbols'
+import { PictureMarkerSymbol, SimpleMarkerSymbol } from '@arcgis/core/symbols'
 import SceneView from '@arcgis/core/views/SceneView'
 // import Search from '@arcgis/core/widgets/Search'
 import * as d3 from 'd3'
@@ -13,7 +13,7 @@ import { createRecenterButton } from './MapRecenterButton'
 import PlaygroundPoint from './PlaygroundPoint'
 
 const Playground: React.FC = () => {
-  const { setViewRef, mapType, setIsPMapAvailable } = usePlaygroundStore()
+  const { setViewRef, mapType, setIsPMapAvailable, addedPoints } = usePlaygroundStore()
   const viewRef = useRef<SceneView | null>(null)
   const initialCamera = {
     position: {
@@ -61,11 +61,15 @@ const Playground: React.FC = () => {
     const satellitesLayer = new GraphicsLayer({ id: 'Satellites' })
     map.add(satellitesLayer)
 
+    const pointsLayer = new GraphicsLayer({ id: 'Points' })
+    map.add(pointsLayer)
+
     view
       .when(() => {
         setIsPMapAvailable(true)
         loadSatelliteData(satellitesLayer)
         createRecenterButton(view, initialCamera)
+        updatePointsLayer(pointsLayer)
       })
       .catch((error) => {
         console.error('Error loading view:', error)
@@ -79,6 +83,15 @@ const Playground: React.FC = () => {
       }
     }
   }, [mapType, setViewRef])
+
+  useEffect(() => {
+    if (viewRef.current) {
+      const pointsLayer = viewRef.current.map.findLayerById('Points') as GraphicsLayer
+      if (pointsLayer) {
+        updatePointsLayer(pointsLayer)
+      }
+    }
+  }, [addedPoints])
 
   const loadSatelliteData = async (satelliteLayer: GraphicsLayer) => {
     const url = '/rinex210.csv'
@@ -143,6 +156,21 @@ const Playground: React.FC = () => {
       return parseFloat(value)
     }
     return NaN
+  }
+
+  const updatePointsLayer = (pointsLayer: GraphicsLayer) => {
+    pointsLayer.removeAll()
+    addedPoints.forEach((point) => {
+      const symbol = new SimpleMarkerSymbol({
+        color: 'blue',
+        size: '8px'
+      })
+      const graphic = new Graphic({
+        geometry: point,
+        symbol: symbol
+      })
+      pointsLayer.add(graphic)
+    })
   }
 
   return (

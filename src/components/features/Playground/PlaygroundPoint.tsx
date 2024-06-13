@@ -1,6 +1,4 @@
-import Graphic from '@arcgis/core/Graphic'
 import { Point } from '@arcgis/core/geometry'
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import { useCallback, useEffect } from 'react'
@@ -12,7 +10,7 @@ interface PlaygroundPointsProps {
 }
 
 const PlaygroundPoint: React.FC<PlaygroundPointsProps> = ({ viewRef }) => {
-  const { pointMode, addedPoints, setAddedPoints } = usePlaygroundStore()
+  const { pointMode, setAddedPoints } = usePlaygroundStore()
 
   const handleClick = useCallback(
     (event: any) => {
@@ -43,23 +41,6 @@ const PlaygroundPoint: React.FC<PlaygroundPointsProps> = ({ viewRef }) => {
       }
     }
   }, [pointMode, handleClick, setAddedPoints, viewRef])
-
-  useEffect(() => {
-    if (viewRef.current) {
-      viewRef.current.graphics.removeAll()
-      addedPoints.forEach((point) => {
-        const symbol = new SimpleMarkerSymbol({
-          color: 'blue',
-          size: '8px'
-        })
-        const graphic = new Graphic({
-          geometry: point,
-          symbol: symbol
-        })
-        viewRef.current!.graphics.add(graphic)
-      })
-    }
-  }, [addedPoints, viewRef])
 
   return null
 }
