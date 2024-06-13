@@ -61,7 +61,7 @@ const Playground: React.FC = () => {
     view
       .when(() => {
         setIsPMapAvailable(true)
-        createRecenterButton(view, initialCamera, satellitesLayer, pointsLayer)
+        createRecenterButton(view, initialCamera)
         updatePointsLayer(pointsLayer)
 
         // Load satellite data and initialize the time slider
