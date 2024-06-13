@@ -8,15 +8,20 @@ Tech stacks:
 
 ## ArcGIS Javascript SDK
 
-The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology.
+The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library provided by Esri for building web applications that use geographic information system (GIS) technology. Below are the features introduced in this project.
 
-Features introduced in this project:
+`Map Tab`:
 
-1. Switching between 3D scene and 2D map views.
-2. Layer controls such as 3D buildings and 2D wind flow layer.
-3. Satellite locations/orbits visualisation
+1. Switching between 3D scene and 2D map views
+2. Layer controls such as 3D buildings and 2D wind flow layer
+3. Satellite visualisation
 4. Geocoding for address searching tool
 5. Routing between multiple destinations
+
+`Playground Tab` which is more user controllable environment:
+
+1. Adding points on map for user preferences and fun
+2. Visualising time series MEO satellite positions and its orbit pattern from RINEX navigation file. (Although I am using mocked data here)
 
 ## Going into developments
 
