@@ -1,8 +1,11 @@
 import Graphic from '@arcgis/core/Graphic'
 import Map from '@arcgis/core/Map'
+import TimeExtent from '@arcgis/core/TimeExtent'
+import TimeInterval from '@arcgis/core/TimeInterval'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import { SimpleMarkerSymbol } from '@arcgis/core/symbols'
 import SceneView from '@arcgis/core/views/SceneView'
+import TimeSlider from '@arcgis/core/widgets/TimeSlider'
 // import Search from '@arcgis/core/widgets/Search'
 import { useEffect, useRef } from 'react'
 
@@ -51,6 +54,26 @@ const Playground: React.FC = () => {
 
     setViewRef(view)
     viewRef.current = view
+
+    // Initialize the TimeSlider
+    const timeSlider = new TimeSlider({
+      container: 'timeSliderDiv',
+      view: view,
+      timeVisible: true,
+      loop: true,
+      fullTimeExtent: new TimeExtent({
+        start: new Date(2018, 4, 1),
+        end: new Date(2018, 4, 6)
+      }),
+      stops: {
+        interval: new TimeInterval({
+          value: 1,
+          unit: 'days'
+        })
+      }
+    })
+
+    view.ui.add(timeSlider, 'bottom-left')
 
     // const search = new Search({
     //   view: view

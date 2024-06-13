@@ -70,7 +70,10 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     if (!isPlayGroundRoute && pointMode) {
       togglePointMode()
     }
-  }, [isMapRoute, isPlayGroundRoute])
+    if (!isPMapAvailable && pointMode) {
+      togglePointMode()
+    }
+  }, [isMapRoute, isPlayGroundRoute, isPMapAvailable])
 
   return (
     <Box display="flex" width="100%" height="100%">
