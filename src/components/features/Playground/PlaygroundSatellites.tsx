@@ -4,14 +4,45 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import { PictureMarkerSymbol } from '@arcgis/core/symbols'
 import * as d3 from 'd3'
 
-export const loadSatelliteData = async (satelliteLayer: GraphicsLayer) => {
-  const url = '/rinex210.csv'
+// Load both CSV files and combine the data
+export const loadSatelliteData = async (): Promise<any[]> => {
+  const urls = ['/rinex210.csv']
+  let combinedData: any[] = []
 
   try {
-    const data = await d3.csv(url)
+    for (const url of urls) {
+      const data = await d3.csv(url)
+      combinedData = combinedData.concat(data)
+    }
+    return combinedData
+  } catch (error) {
+    console.error('Error loading satellite data:', error)
+    return []
+  }
+}
 
-    data.forEach((d: any, i: any) => {
-      const commonName = `Satellite G${d.Sat} 1/5/2018`
+// Filter data based on the time extent and update the satellite layer
+export const updateSatelliteLayer = (
+  satelliteLayer: GraphicsLayer,
+  data: any[],
+  timeExtent: __esri.TimeExtent
+) => {
+  satelliteLayer.removeAll()
+
+  // Convert timeExtent to UTC
+  const timeExtentStartUTC = new Date(
+    timeExtent.start.getTime() - timeExtent.start.getTimezoneOffset() * 60000
+  )
+  const timeExtentEndUTC = new Date(
+    timeExtent.end.getTime() - timeExtent.end.getTimezoneOffset() * 60000
+  )
+
+  data.forEach((d: any, i: any) => {
+    const date = new Date(d.date)
+    const dateUTC = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+
+    if (dateUTC >= timeExtentStartUTC && dateUTC <= timeExtentEndUTC) {
+      const commonName = `Satellite G${d.Sat} ${d.date}`
       const latitude = parseScientific(d.Lat)
       const longitude = parseScientific(d.Lon)
       const altitude = parseScientific(d.Alt)
@@ -54,10 +85,8 @@ export const loadSatelliteData = async (satelliteLayer: GraphicsLayer) => {
 
         satelliteLayer.add(graphic)
       }
-    })
-  } catch (error) {
-    console.error('Error loading satellite data:', error)
-  }
+    }
+  })
 }
 
 const parseScientific = (value: string): number => {

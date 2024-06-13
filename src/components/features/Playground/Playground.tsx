@@ -12,11 +12,12 @@ import { useEffect, useRef } from 'react'
 import { usePlaygroundStore } from '../../../store/usePlaygroundStore'
 import { createRecenterButton } from './MapRecenterButton'
 import PlaygroundPoint from './PlaygroundPoint'
-import { loadSatelliteData } from './PlaygroundSatellites'
+import { loadSatelliteData, updateSatelliteLayer } from './PlaygroundSatellites'
 
 const Playground: React.FC = () => {
   const { setViewRef, mapType, setIsPMapAvailable, addedPoints } = usePlaygroundStore()
   const viewRef = useRef<SceneView | null>(null)
+
   const initialCamera = {
     position: {
       x: -100.39899666,
@@ -55,31 +56,6 @@ const Playground: React.FC = () => {
     setViewRef(view)
     viewRef.current = view
 
-    // Initialize the TimeSlider
-    const timeSlider = new TimeSlider({
-      container: 'timeSliderDiv',
-      view: view,
-      timeVisible: true,
-      loop: true,
-      fullTimeExtent: new TimeExtent({
-        start: new Date(2018, 4, 1),
-        end: new Date(2018, 4, 6)
-      }),
-      stops: {
-        interval: new TimeInterval({
-          value: 1,
-          unit: 'days'
-        })
-      }
-    })
-
-    view.ui.add(timeSlider, 'bottom-left')
-
-    // const search = new Search({
-    //   view: view
-    // })
-    // view.ui.add(search, 'top-right')
-
     const satellitesLayer = new GraphicsLayer({ id: 'Satellites' })
     map.add(satellitesLayer)
 
@@ -89,9 +65,47 @@ const Playground: React.FC = () => {
     view
       .when(() => {
         setIsPMapAvailable(true)
-        loadSatelliteData(satellitesLayer)
         createRecenterButton(view, initialCamera)
         updatePointsLayer(pointsLayer)
+
+        // Load satellite data
+        loadSatelliteData()
+          .then((data) => {
+            if (data.length > 0) {
+              // Initialize the TimeSlider
+              const timeSlider = new TimeSlider({
+                container: 'timeSliderDiv',
+                view: view,
+                timeVisible: true,
+                loop: true,
+                fullTimeExtent: new TimeExtent({
+                  start: new Date(Date.UTC(2018, 4, 1)),
+                  end: new Date(Date.UTC(2018, 4, 6))
+                }),
+                stops: {
+                  interval: new TimeInterval({
+                    value: 1,
+                    unit: 'days'
+                  })
+                }
+              })
+
+              view.ui.add(timeSlider, 'bottom-left')
+
+              // Update satellite layer on time extent change
+              timeSlider.watch('timeExtent', (newTimeExtent) => {
+                updateSatelliteLayer(satellitesLayer, data, newTimeExtent)
+              })
+
+              // Initial update for satellite layer
+              updateSatelliteLayer(satellitesLayer, data, timeSlider.fullTimeExtent)
+            } else {
+              console.error('No data loaded.')
+            }
+          })
+          .catch((error) => {
+            console.error('Error loading satellite data:', error)
+          })
       })
       .catch((error) => {
         console.error('Error loading view:', error)
@@ -133,6 +147,10 @@ const Playground: React.FC = () => {
   return (
     <div style={{ height: '100%', width: '100%' }}>
       <div id="viewDiv" style={{ height: '100%', width: '100%' }}></div>
+      <div
+        id="timeSliderDiv"
+        style={{ position: 'absolute', bottom: '10px', left: '10px', width: '50%' }}
+      ></div>
       <PlaygroundPoint viewRef={viewRef} />
     </div>
   )
