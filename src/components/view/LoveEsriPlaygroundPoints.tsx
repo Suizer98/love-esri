@@ -3,15 +3,15 @@ import { Box, Button, Text, VStack } from '@chakra-ui/react'
 import { usePlaygroundStore } from '../../store/usePlaygroundStore'
 
 const LoveEsriPlaygroundPoints = () => {
-  const { addedPoints, setAddedPoints } = usePlaygroundStore()
+  const { addedPoints, setAddedPoints, isPMapAvailable } = usePlaygroundStore()
 
   const handleClearPoints = () => {
     setAddedPoints([])
   }
 
   return (
-    <Box bg="white" p={4} borderRadius="md" boxShadow="md">
-      <VStack align="start" spacing={2}>
+    <Box bg="white" p={4} borderRadius="md" boxShadow="md" width="100%">
+      <VStack align="start" spacing={2} maxH="300px" overflowY="auto">
         {addedPoints.length > 0 ? (
           <>
             {addedPoints.map((point, index) => (
@@ -23,7 +23,7 @@ const LoveEsriPlaygroundPoints = () => {
                 <Text>Longitude: {point.longitude.toFixed(4)}</Text>
               </Box>
             ))}
-            <Button colorScheme="red" onClick={handleClearPoints}>
+            <Button colorScheme="red" onClick={handleClearPoints} disabled={!isPMapAvailable}>
               Clear all points
             </Button>
           </>
