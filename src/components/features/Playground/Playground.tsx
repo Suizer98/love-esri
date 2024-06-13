@@ -4,7 +4,7 @@ import PopupTemplate from '@arcgis/core/PopupTemplate'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import { PictureMarkerSymbol } from '@arcgis/core/symbols'
 import SceneView from '@arcgis/core/views/SceneView'
-import Search from '@arcgis/core/widgets/Search'
+// import Search from '@arcgis/core/widgets/Search'
 import * as d3 from 'd3'
 import { useEffect, useRef } from 'react'
 
@@ -53,10 +53,10 @@ const Playground: React.FC = () => {
     setViewRef(view)
     viewRef.current = view
 
-    const search = new Search({
-      view: view
-    })
-    view.ui.add(search, 'top-right')
+    // const search = new Search({
+    //   view: view
+    // })
+    // view.ui.add(search, 'top-right')
 
     const satellitesLayer = new GraphicsLayer({ id: 'Satellites' })
     map.add(satellitesLayer)

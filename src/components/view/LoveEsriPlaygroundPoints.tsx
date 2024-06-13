@@ -16,11 +16,11 @@ const LoveEsriPlaygroundPoints = () => {
           <>
             {addedPoints.map((point, index) => (
               <Box key={index} p={2} bg="gray.100" borderRadius="md" w="100%">
-                <Text fontWeight="bold" color="blue.800">
+                <Text fontSize={12} fontWeight="bold" color="blue.800">
                   Point {index + 1}
                 </Text>
-                <Text>Latitude: {point.latitude.toFixed(4)}</Text>
-                <Text>Longitude: {point.longitude.toFixed(4)}</Text>
+                <Text fontSize={12}>Latitude: {point.latitude.toFixed(4)}</Text>
+                <Text fontSize={12}>Longitude: {point.longitude.toFixed(4)}</Text>
               </Box>
             ))}
             <Button colorScheme="red" onClick={handleClearPoints} disabled={!isPMapAvailable}>
