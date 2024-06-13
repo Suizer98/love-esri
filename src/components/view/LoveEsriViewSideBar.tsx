@@ -136,12 +136,12 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                 <>
                   <Box bg="white" p={4} borderRadius="md" boxShadow="md">
                     <Text fontWeight="bold" color="blue.800">
-                      Satellite Information
+                      Fun fact about Satellites
                     </Text>
                     <Text color="black" fontSize={12}>
-                      The satellites are MEO (Medium Earth Orbit) which explains the high altitudes.
-                      Data are extracted from RINEX navigation files and then converted from ECEF to
-                      LLH.
+                      These GPS satellites are MEO (Medium Earth Orbit) which explains the high
+                      altitudes. Data are extracted from RINEX navigation files and then converted
+                      from ECEF to LLH.
                     </Text>
                   </Box>
                   <Text className="esri-widget" bg="gray.200" fontWeight="bold" color="blue.800">

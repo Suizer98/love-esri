@@ -130,7 +130,7 @@ export const createRecenterButton = (
     </Tooltip>
   )
   recenterButtonDiv.appendChild(tooltipContainer)
-  view.ui.add(recenterButtonDiv, 'bottom-left')
+  view.ui.add(recenterButtonDiv, 'top-left')
 
   recenterButtonDiv.addEventListener('click', () => {
     view.goTo(initialCamera)
