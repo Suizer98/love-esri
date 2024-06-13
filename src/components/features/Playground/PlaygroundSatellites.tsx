@@ -11,7 +11,7 @@ export const loadSatelliteData = async (satelliteLayer: GraphicsLayer) => {
     const data = await d3.csv(url)
 
     data.forEach((d: any, i: any) => {
-      const commonName = `Satellite ${d.Sat}`
+      const commonName = `Satellite G${d.Sat} 1/5/2018`
       const latitude = parseScientific(d.Lat)
       const longitude = parseScientific(d.Lon)
       const altitude = parseScientific(d.Alt)
