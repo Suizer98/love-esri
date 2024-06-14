@@ -16,7 +16,7 @@ import { useRouting } from './useRouting'
 
 const MapPort: React.FC = () => {
   const viewType = useMapStore((state) => state.mapType)
-  const { setIsMapAvailable, setViewRef } = useMapStore()
+  const { isMapAvailable, setIsMapAvailable, setViewRef } = useMapStore()
   const { layers } = useLayersStore()
 
   const viewRef = useRef<MapView | SceneView | null>(null)
@@ -112,12 +112,14 @@ const MapPort: React.FC = () => {
   return (
     <>
       <div id="viewDiv" style={{ height: '100%', width: '100%', padding: 0, margin: 0 }}>
-        <MapDirections
-          loading={loading}
-          routeSteps={routeSteps}
-          isExpanded={isExpanded}
-          setIsExpanded={setIsExpanded}
-        />
+        {isMapAvailable && (
+          <MapDirections
+            loading={loading}
+            routeSteps={routeSteps}
+            isExpanded={isExpanded}
+            setIsExpanded={setIsExpanded}
+          />
+        )}
       </div>
       <MapComboBox />
     </>

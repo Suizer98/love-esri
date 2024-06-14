@@ -9,11 +9,7 @@ import { useMapStore } from '../../store/useMapStore'
 import { useViewStore } from '../../store/useViewStore'
 import { LoveEsriMainBarRoute } from './LoveEsriRoute'
 
-interface LoveEsriViewBarProps {
-  onToggleSidebar: () => void
-}
-
-export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
+export function LoveEsriViewBar() {
   const { user, signIn, signOut, checkExistingSession } = useAuthStore(
     (state) => ({
       user: state.user,
@@ -31,14 +27,11 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
     shallow
   )
 
-  const { isDesktopMode } = useViewStore()
+  const { isDesktopMode, toggleSidebar } = useViewStore()
   const toastShownRef = useRef(false)
   const toast = useToast()
 
-  const handleSignIn = () => {
-    signIn()
-  }
-
+  const handleSignIn = () => signIn()
   const handleSignOut = () => {
     setIsMapAvailable(false)
     signOut()
@@ -71,7 +64,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
   return (
     <Flex as="nav" bg="#370B6D" p={4} color="white" width="100%">
       <HStack spacing={4}>
-        <Button variant="link" color="white" onClick={onToggleSidebar}>
+        <Button variant="link" color="white" onClick={toggleSidebar}>
           <HamburgerIcon />
         </Button>
         <Text

@@ -6,22 +6,20 @@ import { LoveEsriViewBar } from './view/LoveEsriViewBar'
 import { LoveEsriViewSideBar } from './view/LoveEsriViewSideBar'
 
 const LoveEsriApp = () => {
-  const { isSidebarVisible, toggleSidebar, setIsDesktopMode } = useViewStore()
   const [isLargerThanWidth] = useMediaQuery('(min-width: 768px)')
+  const { setIsDesktopMode, toggleSidebar } = useViewStore()
 
   useEffect(() => {
+    setIsDesktopMode(isLargerThanWidth)
     if (isLargerThanWidth) {
-      setIsDesktopMode(true)
       toggleSidebar()
-    } else {
-      setIsDesktopMode(false)
     }
-  }, [isLargerThanWidth])
+  }, [isLargerThanWidth, setIsDesktopMode, toggleSidebar])
 
   return (
     <>
-      <LoveEsriViewBar onToggleSidebar={toggleSidebar} />
-      <LoveEsriViewSideBar isVisible={isSidebarVisible} toggleSidebar={toggleSidebar} />
+      <LoveEsriViewBar />
+      <LoveEsriViewSideBar />
     </>
   )
 }

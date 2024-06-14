@@ -13,12 +13,7 @@ import LoveEsriPlaygroundPoints from './LoveEsriPlaygroundPoints'
 import { LoveEsriPopover } from './LoveEsriPopover'
 import { LoveEsriSideBarRoute } from './LoveEsriRoute'
 
-interface LoveEsriViewSideBarProps {
-  isVisible: boolean
-  toggleSidebar: () => void
-}
-
-export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSideBarProps) {
+export function LoveEsriViewSideBar() {
   const { checkExistingSession } = useAuthStore(
     (state) => ({
       user: state.user,
@@ -29,11 +24,19 @@ export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSi
     shallow
   )
 
-  const { routingMode, toggleRoutingMode, isMapAvailable, mapType, switchMapType } = useMapStore(
+  const {
+    routingMode,
+    toggleRoutingMode,
+    isMapAvailable,
+    setIsMapAvailable,
+    mapType,
+    switchMapType
+  } = useMapStore(
     (state) => ({
       routingMode: state.routingMode,
       toggleRoutingMode: state.toggleRoutingMode,
       isMapAvailable: state.isMapAvailable,
+      setIsMapAvailable: state.setIsMapAvailable,
       mapType: state.mapType,
       switchMapType: state.switchMapType
     }),
@@ -49,9 +52,7 @@ export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSi
     shallow
   )
 
-  const { isDesktopMode } = useViewStore((state) => ({
-    isDesktopMode: state.isDesktopMode
-  }))
+  const { isDesktopMode, isSidebarVisible, toggleSidebar } = useViewStore()
 
   const location = useLocation()
   const isMapRoute = location.pathname === '/'
@@ -60,12 +61,6 @@ export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSi
   useEffect(() => {
     checkExistingSession()
   }, [checkExistingSession])
-
-  useEffect(() => {
-    if (routingMode == true) {
-      toggleRoutingMode()
-    }
-  }, [mapType])
 
   useEffect(() => {
     if (!isPlayGroundRoute && pointMode) {
@@ -83,17 +78,28 @@ export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSi
     }
   }
 
+  const handleMapTypeSwitch = (value: '2D' | '3D') => {
+    if (routingMode) {
+      toggleRoutingMode()
+    }
+    setIsMapAvailable(false)
+    switchMapType(value)
+    if (!isDesktopMode) {
+      toggleSidebar()
+    }
+  }
+
   return (
     <Box display="flex" width="100%" height="100%">
       <Box
-        width={isVisible ? { base: '100%', md: '20%' } : '0'}
+        width={isSidebarVisible ? { base: '100%', md: '20%' } : '0'}
         bg="gray.200"
-        p={isVisible ? 4 : 0}
+        p={isSidebarVisible ? 4 : 0}
         transition="width 0.3s ease, padding 0.3s ease"
         overflow="hidden"
       >
         <VStack align="start" spacing={4}>
-          {isVisible && (
+          {isSidebarVisible && (
             <>
               <LoveEsriSideBarRoute />
               {isMapRoute && (
@@ -104,10 +110,7 @@ export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSi
                   <Tooltip label="Switch between 2D or 3D Map" bg="black" placement="top">
                     <Box bg="white" p={4} borderRadius="md" boxShadow="md">
                       <RadioGroup
-                        onChange={(value) => {
-                          switchMapType(value as '2D' | '3D')
-                          toggleSidebar()
-                        }}
+                        onChange={handleMapTypeSwitch}
                         value={mapType}
                         isDisabled={!isMapAvailable}
                       >
@@ -192,7 +195,7 @@ export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSi
           )}
         </VStack>
       </Box>
-      <LoveEsriMainPort isVisible={isVisible} isDesktopMode={isDesktopMode} />
+      <LoveEsriMainPort isVisible={isSidebarVisible} isDesktopMode={isDesktopMode} />
     </Box>
   )
 }
