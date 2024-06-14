@@ -77,7 +77,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
         <Text
           className="esri-widget"
           bg="#370B6D"
-          fontSize="large"
+          fontSize="medium"
           fontWeight="bold"
           as={RouterLink}
           to="/"
@@ -105,6 +105,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
             </Text>
           </Tooltip>
           <Button
+            fontSize={14}
             className="esri-widget"
             bg="#370B6D"
             variant="link"
@@ -116,6 +117,7 @@ export function LoveEsriViewBar({ onToggleSidebar }: LoveEsriViewBarProps) {
         </HStack>
       ) : (
         <Button
+          fontSize={14}
           className="esri-widget"
           bg="#370B6D"
           variant="link"

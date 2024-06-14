@@ -15,9 +15,10 @@ import { LoveEsriSideBarRoute } from './LoveEsriRoute'
 
 interface LoveEsriViewSideBarProps {
   isVisible: boolean
+  toggleSidebar: () => void
 }
 
-export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
+export function LoveEsriViewSideBar({ isVisible, toggleSidebar }: LoveEsriViewSideBarProps) {
   const { checkExistingSession } = useAuthStore(
     (state) => ({
       user: state.user,
@@ -75,6 +76,13 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
     }
   }, [isMapRoute, isPlayGroundRoute, isPMapAvailable])
 
+  const handleCheckboxChange = (toggleFunction: () => void) => {
+    toggleFunction()
+    if (!isDesktopMode) {
+      toggleSidebar()
+    }
+  }
+
   return (
     <Box display="flex" width="100%" height="100%">
       <Box
@@ -96,7 +104,10 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                   <Tooltip label="Switch between 2D or 3D Map" bg="black" placement="top">
                     <Box bg="white" p={4} borderRadius="md" boxShadow="md">
                       <RadioGroup
-                        onChange={(value) => switchMapType(value as '2D' | '3D')}
+                        onChange={(value) => {
+                          switchMapType(value as '2D' | '3D')
+                          toggleSidebar()
+                        }}
                         value={mapType}
                         isDisabled={!isMapAvailable}
                       >
@@ -119,7 +130,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                       <Checkbox
                         isChecked={routingMode}
                         disabled={!isMapAvailable}
-                        onChange={toggleRoutingMode}
+                        onChange={() => handleCheckboxChange(toggleRoutingMode)}
                       >
                         Enable Routing
                       </Checkbox>
@@ -152,7 +163,7 @@ export function LoveEsriViewSideBar({ isVisible }: LoveEsriViewSideBarProps) {
                       <Checkbox
                         isChecked={pointMode}
                         disabled={!isPMapAvailable}
-                        onChange={togglePointMode}
+                        onChange={() => handleCheckboxChange(togglePointMode)}
                       >
                         Enable Point adding mode
                       </Checkbox>

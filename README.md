@@ -79,6 +79,16 @@ npm run build
 
 `VITE_ESRI_API`: The normal api key provided when you register ArcGIS Developer
 
+### WebGL issue causing 3D Scene not loading
+
+`Your WebGL implementation doesn't seem to support hardware accelerated rendering. Check your browser settings or if your GPU is in a blocklist.`
+
+For Chrome:
+
+1. Go to chrome://flags/.
+2. Search for "WebGL".
+3. Enable WebGL-related flags if they are disabled.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

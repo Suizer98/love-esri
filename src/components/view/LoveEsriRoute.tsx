@@ -12,6 +12,7 @@ export function LoveEsriSideBarRoute() {
         <Box bg="#5F3AAF" p={4} borderRadius="md" boxShadow="md">
           <HStack spacing={1}>
             <Button
+              fontSize={14}
               className="esri-widget"
               bg="#5F3AAF"
               as={RouterLink}
@@ -25,6 +26,7 @@ export function LoveEsriSideBarRoute() {
               Map
             </Button>
             <Button
+              fontSize={14}
               className="esri-widget"
               bg="#5F3AAF"
               as={RouterLink}
@@ -38,6 +40,7 @@ export function LoveEsriSideBarRoute() {
               Playground
             </Button>
             <Button
+              fontSize={14}
               className="esri-widget"
               bg="#5F3AAF"
               as={RouterLink}
@@ -65,6 +68,7 @@ export function LoveEsriMainBarRoute() {
       {isDesktopMode ? (
         <>
           <Button
+            fontSize={14}
             className="esri-widget"
             bg="#370B6D"
             as={RouterLink}
@@ -75,6 +79,7 @@ export function LoveEsriMainBarRoute() {
             Map
           </Button>
           <Button
+            fontSize={14}
             className="esri-widget"
             bg="#370B6D"
             as={RouterLink}
@@ -85,6 +90,7 @@ export function LoveEsriMainBarRoute() {
             Playground
           </Button>
           <Button
+            fontSize={14}
             className="esri-widget"
             bg="#370B6D"
             as={RouterLink}

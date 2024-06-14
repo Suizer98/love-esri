@@ -21,7 +21,7 @@ const LoveEsriApp = () => {
   return (
     <>
       <LoveEsriViewBar onToggleSidebar={toggleSidebar} />
-      <LoveEsriViewSideBar isVisible={isSidebarVisible} />
+      <LoveEsriViewSideBar isVisible={isSidebarVisible} toggleSidebar={toggleSidebar} />
     </>
   )
 }

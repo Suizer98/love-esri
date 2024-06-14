@@ -32,7 +32,15 @@ export const useRouting = (
       routeLayerRef.current = routeLayer
       viewRef.current?.map.add(routeLayer)
 
-      const token = IdentityManager.findCredential('https://www.arcgis.com/sharing').token
+      let token
+
+      const credential = IdentityManager.findCredential('https://www.arcgis.com/sharing')
+
+      if (credential && credential.token) {
+        token = credential.token
+      } else {
+        token = import.meta.env.VITE_ESRI_API
+      }
 
       const routeParams = new RouteParameters({
         apiKey: token,

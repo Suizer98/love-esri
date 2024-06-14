@@ -62,7 +62,7 @@ const MapComboBox: React.FC = () => {
           position: 'absolute',
           top: '72px',
           right: '10px',
-          width: isDesktopMode ? '195px' : '150px',
+          width: isDesktopMode ? '195px' : '160px',
           height: '48px',
           padding: '10px',
           zIndex: 5

@@ -11,8 +11,9 @@ import { useViewStore } from '../../store/useViewStore'
 const LayerVisibilityControl: React.FC = () => {
   const { layers, toggleLayerVisibility } = useLayersStore()
   const { viewRef, mapType, isMapAvailable } = useMapStore()
-  const { isDesktopMode } = useViewStore((state) => ({
-    isDesktopMode: state.isDesktopMode
+  const { isDesktopMode, toggleSidebar } = useViewStore((state) => ({
+    isDesktopMode: state.isDesktopMode,
+    toggleSidebar: state.toggleSidebar
   }))
 
   const updateCameraPosition3D = async (layerName: string) => {
@@ -82,6 +83,9 @@ const LayerVisibilityControl: React.FC = () => {
         if (recenterButton) {
           recenterButton.dispatchEvent(new MouseEvent('click', { bubbles: true }))
         }
+      }
+      if (!isDesktopMode) {
+        toggleSidebar()
       }
     }
   }
