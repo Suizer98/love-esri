@@ -55,8 +55,8 @@ The page will reload if you make edits.
 You will also see any lint errors in the console.
 
 ### Typing issues message
-The `Vite Checker` is constantly checking if any typing issues in our TypeScript codes
-by peompting messages in runtime.
+The `Vite Checker` is constantly checking if any typing issues exist in 
+our TypeScript codes by prompting messages in runtime.
 
 ### Found issues in code style?
 
