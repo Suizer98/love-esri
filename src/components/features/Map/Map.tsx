@@ -43,7 +43,7 @@ const MapPort: React.FC = () => {
         scale: 123456789,
         map: map,
         zoom: 3,
-        center: [-100.39899666, 37.77940678],
+        center: [-96.0005, 39.0005],
         ui: {
           components: []
         }
@@ -56,7 +56,7 @@ const MapPort: React.FC = () => {
         container: viewDiv,
         map: map,
         zoom: 3,
-        center: [-100.39899666, 37.77940678],
+        center: [-96.0005, 39.0005],
         ui: {
           components: []
         }

@@ -58,6 +58,7 @@ const LayerVisibilityControl: React.FC = () => {
       if (layer) {
         await layer.when()
         const extent = layer.fullExtent
+
         if (extent) {
           await view.goTo(extent)
           if (view.zoom < 3) {
