@@ -38,7 +38,7 @@ In the project directory, you can either prepare below for local developments:
 
 ### NPM commands
 
-Runs the app in the development mode. Open [http://localhost:3000/](http://localhost:3000/) to view it in the browser.
+Runs the app in the development mode. Open [http://localhost:3001/](http://localhost:3001/) to view it in the browser.
 
 ```
 npm install
@@ -53,6 +53,10 @@ docker-compose up --build
 
 The page will reload if you make edits.
 You will also see any lint errors in the console.
+
+### Typing issues message
+The `Vite Checker` is constantly checking if any typing issues in our TypeScript codes
+by peompting messages in runtime.
 
 ### Found issues in code style?
 
