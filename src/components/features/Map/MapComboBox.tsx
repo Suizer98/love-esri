@@ -60,7 +60,7 @@ const MapComboBox: React.FC = () => {
         className="esri-widget"
         style={{
           position: 'absolute',
-          top: '72px',
+          top: '15px',
           right: '10px',
           width: isDesktopMode ? '195px' : '160px',
           height: '48px',
