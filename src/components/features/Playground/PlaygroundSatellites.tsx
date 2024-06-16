@@ -74,7 +74,7 @@ export const updateSatelliteLayer = (
         const graphic = new Graphic({
           geometry: satelliteLoc,
           symbol: new PictureMarkerSymbol({
-            url: '/satellite.png',
+            url: '/satellite2.png',
             width: '48px',
             height: '48px'
           }),

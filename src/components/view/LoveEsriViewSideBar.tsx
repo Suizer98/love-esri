@@ -188,7 +188,7 @@ export function LoveEsriViewSideBar() {
                 >
                   Nothing here...
                   <br />
-                  perhaps switch to Map Tab?
+                  perhaps switch to Map/Playground Tab?
                 </Text>
               )}
             </>

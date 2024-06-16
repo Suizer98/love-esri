@@ -31,7 +31,7 @@ const Playground: React.FC = () => {
     setIsPMapAvailable(false)
 
     const map = new Map({
-      basemap: 'arcgis/navigation',
+      basemap: 'arcgis/navigation-night',
       ground: 'world-elevation'
     })
 
