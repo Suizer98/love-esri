@@ -1,5 +1,5 @@
 import { Button, Heading, Spinner } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 interface RouteStep {
   attributes: {
@@ -20,6 +20,14 @@ const MapDirections: React.FC<MapDirectionsProps> = ({
   isExpanded,
   setIsExpanded
 }) => {
+  useEffect(() => {
+    if (!loading && routeSteps.length === 0) {
+      setIsExpanded(false)
+    } else if (!loading && routeSteps.length > 0) {
+      setIsExpanded(true)
+    }
+  }, [loading, routeSteps, setIsExpanded])
+
   if (!loading && routeSteps.length === 0) {
     return null
   }
