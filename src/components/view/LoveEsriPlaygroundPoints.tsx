@@ -23,14 +23,19 @@ const LoveEsriPlaygroundPoints = () => {
                 <Text fontSize={12}>Longitude: {point.longitude.toFixed(4)}</Text>
               </Box>
             ))}
-            <Button colorScheme="red" onClick={handleClearPoints} disabled={!isPMapAvailable}>
-              Clear all points
-            </Button>
           </>
         ) : (
           <Text>No points added.</Text>
         )}
       </VStack>
+      <Button
+        colorScheme="red"
+        onClick={handleClearPoints}
+        disabled={!isPMapAvailable}
+        className="mt-4"
+      >
+        Clear all points
+      </Button>
     </Box>
   )
 }
