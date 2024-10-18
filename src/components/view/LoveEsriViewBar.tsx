@@ -89,7 +89,7 @@ export function LoveEsriViewBar() {
             <Text
               className="esri-widget"
               bg="#370B6D"
-              maxW={isDesktopMode ? '200px' : '50px'}
+              maxW={isDesktopMode ? '200px' : '100px'}
               isTruncated
               title={user.username}
               color="#CCBEEA"
