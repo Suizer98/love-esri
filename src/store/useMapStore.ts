@@ -14,6 +14,8 @@ interface ViewTypeState {
   setIsMapLoading: (loading: boolean) => void
   viewRef: MapView | SceneView | null
   setViewRef: (view: MapView | SceneView | null) => void
+  cachedViews: { '2D': MapView | null; '3D': SceneView | null }
+  setCachedView: (type: '2D' | '3D', view: MapView | SceneView | null) => void
 }
 
 // Create the Zustand store for map settings
@@ -27,5 +29,10 @@ export const useMapStore = create<ViewTypeState>((set) => ({
   isMapLoading: false,
   setIsMapLoading: (loading) => set({ isMapLoading: loading }),
   viewRef: null,
-  setViewRef: (view) => set({ viewRef: view })
+  setViewRef: (view) => set({ viewRef: view }),
+  cachedViews: { '2D': null, '3D': null },
+  setCachedView: (type, view) =>
+    set((state) => ({
+      cachedViews: { ...state.cachedViews, [type]: view }
+    }))
 }))

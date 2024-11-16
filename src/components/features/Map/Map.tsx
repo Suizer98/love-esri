@@ -16,7 +16,8 @@ import { useRouting } from './useRouting'
 
 const MapPort: React.FC = () => {
   const viewType = useMapStore((state) => state.mapType)
-  const { isMapAvailable, setIsMapAvailable, setViewRef } = useMapStore()
+  const { isMapAvailable, setIsMapAvailable, setViewRef, cachedViews, setCachedView } =
+    useMapStore()
   const { layers } = useLayersStore()
 
   const viewRef = useRef<MapView | SceneView | null>(null)
@@ -35,68 +36,70 @@ const MapPort: React.FC = () => {
 
     const viewDiv = document.getElementById('viewDiv') as HTMLDivElement
 
-    let view: MapView | SceneView
+    let view: MapView | SceneView | null | any = cachedViews[viewType]
 
-    if (viewType === '3D') {
-      view = new SceneView({
-        container: viewDiv,
-        scale: 123456789,
-        map: map,
-        zoom: 3,
-        center: [-96.0005, 39.0005],
-        ui: {
-          components: []
-        }
-      })
+    if (!view) {
+      if (viewType === '3D') {
+        view = new SceneView({
+          container: viewDiv,
+          scale: 123456789,
+          map: map,
+          zoom: 3,
+          center: [-96.0005, 39.0005],
+          ui: {
+            components: []
+          }
+        })
+      } else {
+        view = new MapView({
+          container: viewDiv,
+          map: map,
+          zoom: 3,
+          center: [-96.0005, 39.0005],
+          ui: {
+            components: []
+          }
+        })
+      }
 
-      // Add Layer
+      // Cache the view for future reuse
+      setCachedView(viewType, view)
+
+      // Initialize layers and widgets
       addLayerRecursively()
+      createSearchWidget(view)
+      createRecenterButton(view)
     } else {
-      view = new MapView({
-        container: viewDiv,
-        map: map,
-        zoom: 3,
-        center: [-96.0005, 39.0005],
-        ui: {
-          components: []
-        }
-      })
-
-      // Add Layer
-      addLayerRecursively()
+      // Reuse the cached view
+      view.container = viewDiv
     }
 
     setViewRef(view)
     viewRef.current = view
 
-    createSearchWidget(view)
-    createRecenterButton(view)
-
     view
       .when(() => {
         setIsMapAvailable(true)
-        const legendExpand = new Expand({
-          view: view,
-          content: new Legend({ view: view }),
-          expanded: false,
-          mode: 'floating'
-        })
-        view.ui.add(legendExpand, 'bottom-left')
-        legendRef.current = legendExpand
+        if (!legendRef.current) {
+          const legendExpand = new Expand({
+            view: view,
+            content: new Legend({ view: view }),
+            expanded: false,
+            mode: 'floating'
+          })
+          view.ui.add(legendExpand, 'bottom-left')
+          legendRef.current = legendExpand
+        }
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         console.error('Error loading view:', error)
       })
 
     return () => {
-      if (viewRef.current) {
-        if (legendRef.current) {
-          viewRef.current.ui.remove(legendRef.current)
-          legendRef.current.destroy()
-          legendRef.current = null
-        }
-        viewRef.current.destroy()
-        viewRef.current = null
+      if (viewRef.current && viewType !== view.viewingMode) {
+        // Detach the container but do not destroy the view
+        const dummyDiv = document.createElement('div')
+        viewRef.current.container = dummyDiv
         setViewRef(null)
       }
     }
