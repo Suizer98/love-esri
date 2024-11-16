@@ -82,6 +82,8 @@ npm run build
 
 `VITE_CLIENT_ID`: The OAuth application client ID
 
+`VITE_CLIENT_SECRET`: The secret key to be used together with `VITE_CLIENT_ID`
+
 `VITE_ESRI_API`: The normal api key provided when you register ArcGIS Developer
 
 ### WebGL issue causing 3D Scene not loading
