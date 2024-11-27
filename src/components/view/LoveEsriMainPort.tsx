@@ -24,6 +24,9 @@ export function LoveEsriMainPort(props: LoveEsriMainPortProps) {
   const location = useLocation()
 
   const renderLoadingOverlay = () => {
+    // Uncomment this when using oauth
+    // if (!user) return null
+
     if (!isDesktopMode && isSidebarVisible) return null
 
     if (location.pathname === '/' && !isMapAvailable) {
