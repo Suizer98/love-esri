@@ -27,7 +27,7 @@ The ArcGIS JavaScript SDK (Software Development Kit) is a comprehensive library 
 
 ### Disclaimer regarding the free usage limitations
 
-Only free tier location services are available at the moment and their usage are limited. You are encouraged to login using your own account, the default user is only to ease demostration purpose and it can be remove anytime soon.
+Only free tier location services are available at the moment and their usage are limited. You are encouraged to login using your own account, the default user is only to ease demostration purpose and it can be removed anytime soon.
 
 ## Going into developments
 
