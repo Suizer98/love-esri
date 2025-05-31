@@ -72,6 +72,8 @@ const MapPort: React.FC = () => {
     } else {
       // Reuse the cached view
       view.container = viewDiv
+      view.center = [-96.0005, 39.0005]
+      view.zoom = 3
     }
 
     setViewRef(view)
