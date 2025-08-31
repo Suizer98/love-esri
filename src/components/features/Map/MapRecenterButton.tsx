@@ -20,6 +20,10 @@ export const createRecenterButton = (view: __esri.MapView | __esri.SceneView) =>
   view.ui.add(recenterButtonDiv, 'bottom-left')
 
   recenterButtonDiv.addEventListener('click', () => {
-    view.goTo({ center: [-96.0005, 39.0005], zoom: 3, heading: 0, tilt: 0 })
+    if (view.type === '3d') {
+      view.goTo({ center: [-96.0005, 39.0005], zoom: 3, heading: 0, tilt: 0 })
+    } else {
+      view.goTo({ center: [-96.0005, 39.0005], zoom: 3, rotation: 0 })
+    }
   })
 }
