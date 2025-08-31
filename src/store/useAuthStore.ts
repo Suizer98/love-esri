@@ -29,17 +29,17 @@ export const useAuthStore = create<AuthState>((set) => ({
     // If not log in, use api key defined in env, this can be removed anytime
     try {
       await IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
-      // const portal = new Portal()
-      // await portal.load()
-      // const user = portal.user
-      // const userInfo = {
-      //   username: user.username,
-      //   fullName: user.fullName,
-      //   email: user.email,
-      //   role: user.role
-      // }
-      // set({ user: userInfo })
-      // localStorage.setItem('user', JSON.stringify(userInfo))
+      const portal = new Portal()
+      await portal.load()
+      const user = portal.user
+      const userInfo = {
+        username: user.username,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role
+      }
+      set({ user: userInfo })
+      localStorage.setItem('user', JSON.stringify(userInfo))
       return 'success'
     } catch (error) {
       // If the user is not signed in, use the API key
