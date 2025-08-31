@@ -24,10 +24,10 @@ export function LoveEsriMainPort(props: LoveEsriMainPortProps) {
   const location = useLocation()
 
   const renderLoadingOverlay = () => {
-    // Uncomment this when using oauth
-    // if (!user) return null
-
     if (!isDesktopMode && isSidebarVisible) return null
+
+    // Only show loading overlay if there's a user (either authenticated or with API key)
+    if (!user) return null
 
     if (location.pathname === '/' && !isMapAvailable) {
       return <LoadingOverlay />
