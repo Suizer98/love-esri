@@ -58,6 +58,14 @@ const Playground: React.FC = () => {
       },
       ui: {
         components: []
+      },
+      popup: {
+        dockEnabled: !isDesktopMode,
+        dockOptions: !isDesktopMode ? {
+          buttonEnabled: true,
+          breakpoint: false,
+          position: 'top-center'
+        } : undefined
       }
     })
 
@@ -136,7 +144,8 @@ const Playground: React.FC = () => {
           width: '80%',
           maxWidth: '800px',
           minWidth: '300px',
-          display: !isDesktopMode && isSidebarVisible ? 'none' : 'block'
+          display: !isDesktopMode && isSidebarVisible ? 'none' : 'block',
+          zIndex: 1
         }}
       ></div>
       <PlaygroundPoint viewRef={viewRef} />

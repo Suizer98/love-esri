@@ -66,7 +66,9 @@ export const updateSatelliteLayer = (
 
       const template = new PopupTemplate({
         title: '{name}',
-        content: 'Satellite G{number} with Altitude {altitude}'
+        content: 'Satellite G{number} with Altitude {altitude}',
+        outFields: ['*'],
+        returnGeometry: true
       })
 
       const graphic = new Graphic({
