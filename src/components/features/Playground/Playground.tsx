@@ -6,12 +6,14 @@ import SceneView from '@arcgis/core/views/SceneView'
 import { useEffect, useRef } from 'react'
 
 import { usePlaygroundStore } from '../../../store/usePlaygroundStore'
+import { useViewStore } from '../../../store/useViewStore'
 import { createRecenterButton } from './MapRecenterButton'
 import PlaygroundPoint from './PlaygroundPoint'
 import { initializeTimeSlider, loadSatelliteData } from './PlaygroundSatellites'
 
 const Playground: React.FC = () => {
   const { setViewRef, mapType, setIsPMapAvailable, addedPoints } = usePlaygroundStore()
+  const { isSidebarVisible, isDesktopMode } = useViewStore()
   const viewRef = useRef<SceneView | null>(null)
 
   const initialCamera = {
@@ -126,7 +128,16 @@ const Playground: React.FC = () => {
       <div id="viewDiv" style={{ height: '100%', width: '100%' }}></div>
       <div
         id="timeSliderDiv"
-        style={{ position: 'absolute', bottom: '10px', left: '10px', width: '50%' }}
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '80%',
+          maxWidth: '800px',
+          minWidth: '300px',
+          display: !isDesktopMode && isSidebarVisible ? 'none' : 'block'
+        }}
       ></div>
       <PlaygroundPoint viewRef={viewRef} />
     </div>

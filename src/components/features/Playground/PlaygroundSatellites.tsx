@@ -41,7 +41,7 @@ export const updateSatelliteLayer = (
 
   // Group by satellite number to avoid duplicates
   const satelliteMap = new Map()
-  
+
   filteredData.forEach((d: any) => {
     const satNumber = d.Sat
     if (!satelliteMap.has(satNumber)) {
@@ -129,7 +129,7 @@ export const initializeTimeSlider = (
       }
     })
 
-    view.ui.add(timeSlider, 'bottom-left')
+    // view.ui.add(timeSlider, 'bottom-left')
 
     timeSlider.watch('timeExtent', (newTimeExtent) => {
       updateSatelliteLayer(satellitesLayer, data, newTimeExtent)
