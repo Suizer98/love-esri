@@ -30,64 +30,61 @@ export const updateSatelliteLayer = (
   data: any[],
   timeExtent: __esri.TimeExtent
 ) => {
+  // Clear all existing graphics first
   satelliteLayer.removeAll()
 
-  // Convert timeExtent to UTC
-  const timeExtentStartUTC = new Date(
-    timeExtent.start.getTime() - timeExtent.start.getTimezoneOffset() * 60000
-  )
-  const timeExtentEndUTC = new Date(
-    timeExtent.end.getTime() - timeExtent.end.getTimezoneOffset() * 60000
-  )
+  // Filter data to only include records within the time extent
+  const filteredData = data.filter((d: any) => {
+    const recordDate = new Date(d.Date)
+    return recordDate >= timeExtent.start && recordDate <= timeExtent.end
+  })
 
-  data.forEach((d: any, i: any) => {
-    const date = new Date(d.Date)
-    const dateUTC = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  // Group by satellite number to avoid duplicates
+  const satelliteMap = new Map()
+  
+  filteredData.forEach((d: any) => {
+    const satNumber = d.Sat
+    if (!satelliteMap.has(satNumber)) {
+      satelliteMap.set(satNumber, d)
+    }
+  })
 
-    if (dateUTC >= timeExtentStartUTC && dateUTC <= timeExtentEndUTC) {
-      const commonName = `Satellite G${d.Sat} ${d.Date}`
-      const latitude = parseScientific(d.Lat)
-      const longitude = parseScientific(d.Lon)
-      const altitude = parseScientific(d.Alt)
+  // Add one graphic per unique satellite
+  satelliteMap.forEach((d: any, satNumber: string) => {
+    const commonName = `Satellite G${d.Sat}`
+    const latitude = parseScientific(d.Lat)
+    const longitude = parseScientific(d.Lon)
+    const altitude = parseScientific(d.Alt)
 
-      if (!isNaN(latitude) && !isNaN(longitude) && !isNaN(altitude)) {
-        const satelliteLoc = {
-          type: 'point',
-          x: longitude,
-          y: latitude,
-          z: altitude
-        } as __esri.GeometryProperties
+    if (!isNaN(latitude) && !isNaN(longitude) && !isNaN(altitude)) {
+      const satelliteLoc = {
+        type: 'point',
+        x: longitude,
+        y: latitude,
+        z: altitude
+      } as __esri.GeometryProperties
 
-        const template = new PopupTemplate({
-          title: '{name}',
-          content: 'Satellite G{number} with Altitude {altitude}',
-          actions: [
-            {
-              title: 'Show Satellite Track',
-              id: 'track',
-              className: 'esri-icon-globe',
-              type: 'button'
-            }
-          ]
-        })
+      const template = new PopupTemplate({
+        title: '{name}',
+        content: 'Satellite G{number} with Altitude {altitude}'
+      })
 
-        const graphic = new Graphic({
-          geometry: satelliteLoc,
-          symbol: new PictureMarkerSymbol({
-            url: '/satellite2.png',
-            width: '48px',
-            height: '48px'
-          }),
-          attributes: {
-            name: commonName,
-            number: i,
-            altitude: altitude
-          },
-          popupTemplate: template
-        })
+      const graphic = new Graphic({
+        geometry: satelliteLoc,
+        symbol: new PictureMarkerSymbol({
+          url: '/satellite2.png',
+          width: '48px',
+          height: '48px'
+        }),
+        attributes: {
+          name: commonName,
+          number: satNumber,
+          altitude: altitude
+        },
+        popupTemplate: template
+      })
 
-        satelliteLayer.add(graphic)
-      }
+      satelliteLayer.add(graphic)
     }
   })
 }
