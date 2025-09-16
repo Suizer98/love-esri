@@ -64,9 +64,9 @@ our TypeScript codes by prompting messages in runtime.
 To fix all formatting and linting using `prettier`:
 
 ```
-npm run style-check
-npm run style-format
-docker exec -it love-esri-love-esri-1 npm run style-format
+npm run check
+npm run format
+docker exec -it love-esri-love-esri-1 npm run format
 
 ```
 
