@@ -44,6 +44,16 @@ const Playground: React.FC = () => {
       map: map,
       zoom: 1,
       camera: initialCamera,
+      constraints: {
+        altitude: {
+          max: 12000000000 // Follow sand box codes
+        }
+      },
+      environment: {
+        lighting: {
+          type: 'virtual'
+        }
+      },
       ui: {
         components: []
       }
@@ -62,7 +72,7 @@ const Playground: React.FC = () => {
       .when(() => {
         setIsPMapAvailable(true)
         // createRecenterButton(view, initialCamera)
-        createRecenterButton(view, initialCamera, satellitesLayer, pointsLayer)
+        createRecenterButton(view, initialCamera)
         updatePointsLayer(pointsLayer)
 
         // Load satellite data and initialize the time slider
