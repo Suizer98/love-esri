@@ -9,7 +9,7 @@ import * as d3 from 'd3'
 
 // Load both CSV files and combine the data
 export const loadSatelliteData = async (): Promise<any[]> => {
-  const urls = ['/rinex210.csv']
+  const urls = ['/chur1610.csv']
   let combinedData: any[] = []
 
   try {
@@ -41,11 +41,11 @@ export const updateSatelliteLayer = (
   )
 
   data.forEach((d: any, i: any) => {
-    const date = new Date(d.date)
+    const date = new Date(d.Date)
     const dateUTC = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
 
     if (dateUTC >= timeExtentStartUTC && dateUTC <= timeExtentEndUTC) {
-      const commonName = `Satellite G${d.Sat} ${d.date}`
+      const commonName = `Satellite G${d.Sat} ${d.Date}`
       const latitude = parseScientific(d.Lat)
       const longitude = parseScientific(d.Lon)
       const altitude = parseScientific(d.Alt)
@@ -107,19 +107,27 @@ export const initializeTimeSlider = (
   data: any[]
 ) => {
   if (data.length > 0) {
+    // Sort data by date to get first and last timestamps
+    const sortedData = [...data].sort(
+      (a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime()
+    )
+
+    const firstTimestamp = new Date(sortedData[0].Date)
+    const lastTimestamp = new Date(sortedData[sortedData.length - 1].Date)
+
     const timeSlider = new TimeSlider({
       container: 'timeSliderDiv',
       view: view,
       timeVisible: true,
       loop: true,
       fullTimeExtent: new TimeExtent({
-        start: new Date(Date.UTC(2018, 4, 1)),
-        end: new Date(Date.UTC(2018, 4, 6))
+        start: firstTimestamp,
+        end: lastTimestamp
       }),
       stops: {
         interval: new TimeInterval({
-          value: 1,
-          unit: 'days'
+          value: 15,
+          unit: 'minutes'
         })
       }
     })
