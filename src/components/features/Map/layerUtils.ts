@@ -102,14 +102,16 @@ export const addLayersToMap = async (
         })
         view.map.add(layerInstance)
         loadPromises.push(layerInstance.load().catch(() => {}))
-        loadSatelliteData(layerInstance)
+        loadSatelliteData(layerInstance as GraphicsLayer)
       }
     }
 
     if (layerInstance) {
       layerInstance.visible = layer.visible
       if (layer.visible) {
-        loadPromises.push(view.whenLayerView(layerInstance).catch(() => {}))
+        loadPromises.push(
+          view.whenLayerView(layerInstance).then(() => {}).catch(() => {})
+        )
       }
     }
   })
