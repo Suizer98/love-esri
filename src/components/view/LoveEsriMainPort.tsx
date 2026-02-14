@@ -7,6 +7,7 @@ import { usePlaygroundStore } from '../../store/usePlaygroundStore'
 import { useViewStore } from '../../store/useViewStore'
 import About from '../features/About'
 import LoadingOverlay from '../features/Loading'
+import { LayerLoadingBar } from '../features/Map/LayerLoadingBar'
 import MapPort from '../features/Map/Map'
 import Playground from '../features/Playground/Playground'
 import Warning from '../features/Warning'
@@ -18,10 +19,11 @@ interface LoveEsriMainPortProps {
 
 export function LoveEsriMainPort(props: LoveEsriMainPortProps) {
   const { user } = useAuthStore((state) => state)
-  const { isMapAvailable } = useMapStore()
+  const { isMapAvailable, isLayersLoading } = useMapStore()
   const { isPMapAvailable } = usePlaygroundStore()
   const { isDesktopMode, isSidebarVisible } = useViewStore()
   const location = useLocation()
+  const isMapRoute = location.pathname === '/'
 
   const renderLoadingOverlay = () => {
     if (!isDesktopMode && isSidebarVisible) return null
@@ -44,6 +46,7 @@ export function LoveEsriMainPort(props: LoveEsriMainPortProps) {
       width={props.isVisible ? { base: '0%', md: '80%' } : '100%'}
       position="relative"
     >
+      {isMapRoute && isLayersLoading && <LayerLoadingBar />}
       {renderLoadingOverlay()}
       <Routes>
         {user ? (

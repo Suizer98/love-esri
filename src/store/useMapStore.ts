@@ -12,6 +12,8 @@ interface ViewTypeState {
   setIsMapAvailable: (available: boolean) => void
   isMapLoading: boolean
   setIsMapLoading: (loading: boolean) => void
+  isLayersLoading: boolean
+  setIsLayersLoading: (loading: boolean) => void
   viewRef: MapView | SceneView | null
   setViewRef: (view: MapView | SceneView | null) => void
   cachedViews: { '2D': MapView | null; '3D': SceneView | null }
@@ -28,6 +30,8 @@ export const useMapStore = create<ViewTypeState>((set) => ({
   setIsMapAvailable: (available) => set({ isMapAvailable: available }),
   isMapLoading: false,
   setIsMapLoading: (loading) => set({ isMapLoading: loading }),
+  isLayersLoading: false,
+  setIsLayersLoading: (loading) => set({ isLayersLoading: loading }),
   viewRef: null,
   setViewRef: (view) => set({ viewRef: view }),
   cachedViews: { '2D': null, '3D': null },

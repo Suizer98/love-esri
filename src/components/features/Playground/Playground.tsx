@@ -61,11 +61,13 @@ const Playground: React.FC = () => {
       },
       popup: {
         dockEnabled: !isDesktopMode,
-        dockOptions: !isDesktopMode ? {
-          buttonEnabled: true,
-          breakpoint: false,
-          position: 'top-center'
-        } : undefined
+        dockOptions: !isDesktopMode
+          ? {
+              buttonEnabled: true,
+              breakpoint: false,
+              position: 'top-center'
+            }
+          : undefined
       }
     })
 

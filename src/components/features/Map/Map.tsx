@@ -110,6 +110,7 @@ const MapPort: React.FC = () => {
   useEffect(() => {
     const view = useMapStore.getState().viewRef
     if (view) {
+      useMapStore.getState().setIsLayersLoading(true)
       addLayersToMap(view, viewType, layers)
     }
   }, [layers, viewType])

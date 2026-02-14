@@ -8,6 +8,7 @@ import { PictureMarkerSymbol } from '@arcgis/core/symbols'
 import * as satellite from 'satellite.js'
 
 import { useLayersStore } from '../../../store/useLayersStore'
+import { useMapStore } from '../../../store/useMapStore'
 
 export const addLayerRecursively = () => {
   const { layers, addLayer } = useLayersStore.getState()
@@ -62,13 +63,15 @@ export const addLayerRecursively = () => {
   }
 }
 
-export const addLayersToMap = (
+export const addLayersToMap = async (
   view: __esri.MapView | __esri.SceneView,
   viewType: string,
   layers: any[]
-) => {
+): Promise<void> => {
+  const loadPromises: Promise<void>[] = []
+
   layers.forEach((layer) => {
-    let layerInstance
+    let layerInstance: __esri.Layer | undefined
     if (viewType === '3D' && layer.name === '3D Buildings') {
       layerInstance = view.map.findLayerById(layer.name) as SceneLayer
       if (!layerInstance) {
@@ -77,6 +80,7 @@ export const addLayersToMap = (
           url: layer.url
         })
         view.map.add(layerInstance)
+        loadPromises.push(layerInstance.load().catch(() => {}))
       }
     } else if (viewType === '2D' && layer.name === '2D Flow') {
       layerInstance = view.map.findLayerById(layer.name) as ImageryTileLayer
@@ -88,6 +92,7 @@ export const addLayersToMap = (
           effect: layer.effect
         })
         view.map.add(layerInstance)
+        loadPromises.push(layerInstance.load().catch(() => {}))
       }
     } else if (layer.type === 'GraphicsLayer' && layer.name === 'Satellites') {
       layerInstance = view.map.findLayerById(layer.name) as GraphicsLayer
@@ -96,16 +101,21 @@ export const addLayersToMap = (
           id: layer.name
         })
         view.map.add(layerInstance)
-
-        // Load satellite data and add to the layer
+        loadPromises.push(layerInstance.load().catch(() => {}))
         loadSatelliteData(layerInstance)
       }
     }
 
     if (layerInstance) {
       layerInstance.visible = layer.visible
+      if (layer.visible) {
+        loadPromises.push(view.whenLayerView(layerInstance).catch(() => {}))
+      }
     }
   })
+
+  await Promise.all(loadPromises)
+  useMapStore.getState().setIsLayersLoading(false)
 }
 
 async function loadSatelliteData(satelliteLayer: GraphicsLayer) {
