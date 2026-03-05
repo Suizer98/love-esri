@@ -31,12 +31,13 @@ export const useAuthStore = create<AuthState>((set) => ({
       await IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
       const portal = new Portal()
       await portal.load()
-      const user = portal.user
+      const portalUser = portal.user
+      if (!portalUser) throw new Error('No user')
       const userInfo = {
-        username: user.username,
-        fullName: user.fullName,
-        email: user.email,
-        role: user.role
+        username: portalUser.username,
+        fullName: portalUser.fullName,
+        email: portalUser.email,
+        role: portalUser.role
       }
       set({ user: userInfo })
       localStorage.setItem('user', JSON.stringify(userInfo))
@@ -75,12 +76,13 @@ export const useAuthStore = create<AuthState>((set) => ({
       await IdentityManager.getCredential('https://www.arcgis.com/sharing')
       const portal = new Portal()
       await portal.load()
-      const user = portal.user
+      const portalUser = portal.user
+      if (!portalUser) return
       const userInfo = {
-        username: user.username,
-        fullName: user.fullName,
-        email: user.email,
-        role: user.role
+        username: portalUser.username,
+        fullName: portalUser.fullName,
+        email: portalUser.email,
+        role: portalUser.role
       }
       set({ user: userInfo })
       localStorage.setItem('user', JSON.stringify(userInfo))

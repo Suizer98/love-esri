@@ -1,10 +1,14 @@
 import Graphic from '@arcgis/core/Graphic'
+import Point from '@arcgis/core/geometry/Point'
 import PopupTemplate from '@arcgis/core/PopupTemplate'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer'
+import Layer from '@arcgis/core/layers/Layer'
 import SceneLayer from '@arcgis/core/layers/SceneLayer'
+import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
 import esriRequest from '@arcgis/core/request'
-import { PictureMarkerSymbol } from '@arcgis/core/symbols'
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
 import * as satellite from 'satellite.js'
 
 import { useLayersStore } from '../../../store/useLayersStore'
@@ -64,26 +68,28 @@ export const addLayerRecursively = () => {
 }
 
 export const addLayersToMap = async (
-  view: __esri.MapView | __esri.SceneView,
+  view: MapView | SceneView,
   viewType: string,
   layers: any[]
 ): Promise<void> => {
+  const map = view.map
+  if (!map) return
   const loadPromises: Promise<void>[] = []
 
   layers.forEach((layer) => {
-    let layerInstance: __esri.Layer | undefined
+    let layerInstance: Layer | undefined
     if (viewType === '3D' && layer.name === '3D Buildings') {
-      layerInstance = view.map.findLayerById(layer.name) as SceneLayer
+      layerInstance = map.findLayerById(layer.name) as SceneLayer
       if (!layerInstance) {
         layerInstance = new SceneLayer({
           id: layer.name,
           url: layer.url
         })
-        view.map.add(layerInstance)
-        loadPromises.push(layerInstance.load().catch(() => {}))
+        map.add(layerInstance)
+        loadPromises.push(layerInstance.load().then(() => {}, () => {}))
       }
     } else if (viewType === '2D' && layer.name === '2D Flow') {
-      layerInstance = view.map.findLayerById(layer.name) as ImageryTileLayer
+      layerInstance = map.findLayerById(layer.name) as ImageryTileLayer
       if (!layerInstance) {
         layerInstance = new ImageryTileLayer({
           id: layer.name,
@@ -91,17 +97,17 @@ export const addLayersToMap = async (
           renderer: layer.renderer,
           effect: layer.effect
         })
-        view.map.add(layerInstance)
-        loadPromises.push(layerInstance.load().catch(() => {}))
+        map.add(layerInstance)
+        loadPromises.push(layerInstance.load().then(() => {}, () => {}))
       }
     } else if (layer.type === 'GraphicsLayer' && layer.name === 'Satellites') {
-      layerInstance = view.map.findLayerById(layer.name) as GraphicsLayer
+      layerInstance = map.findLayerById(layer.name) as GraphicsLayer
       if (!layerInstance) {
         layerInstance = new GraphicsLayer({
           id: layer.name
         })
-        view.map.add(layerInstance)
-        loadPromises.push(layerInstance.load().catch(() => {}))
+        map.add(layerInstance)
+        loadPromises.push(layerInstance.load().then(() => {}, () => {}))
         loadSatelliteData(layerInstance as GraphicsLayer)
       }
     }
@@ -138,7 +144,6 @@ async function loadSatelliteData(satelliteLayer: GraphicsLayer) {
       const time = Date.now()
 
       const satelliteLoc = getSatelliteLocation(new Date(time), line1, line2)
-      // console.log(satelliteLoc)
       if (satelliteLoc) {
         const template = new PopupTemplate({
           title: '{name}',
@@ -154,9 +159,8 @@ async function loadSatelliteData(satelliteLayer: GraphicsLayer) {
         })
 
         const graphic = new Graphic({
-          geometry: satelliteLoc,
+          geometry: new Point(satelliteLoc),
           symbol: new PictureMarkerSymbol({
-            // url: 'https://developers.arcgis.com/javascript/latest/sample-code/satellites-3d/live/satellite.png',
             url: '/satellite.png',
             width: '48px',
             height: '48px'
@@ -209,9 +213,8 @@ const getSatelliteLocation = (date: Date, line1: string, line2: string) => {
   }
 
   return {
-    type: 'point',
     x: rad2deg * longitude,
     y: rad2deg * latitude,
     z: height * 1000
-  } as __esri.GeometryProperties
+  }
 }

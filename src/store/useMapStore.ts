@@ -2,25 +2,32 @@ import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import create from 'zustand'
 
-// Define the state interface for map settings
+export type MapViewType = '2D' | '3D'
+
+export interface PositionObserver {
+  resizeObserver: ResizeObserver
+  onScroll: () => void
+}
+
 interface ViewTypeState {
-  mapType: '2D' | '3D'
-  switchMapType: (type: '2D' | '3D') => void
+  mapType: MapViewType
+  switchMapType: (type: MapViewType) => void
   routingMode: boolean
   toggleRoutingMode: () => void
   isMapAvailable: boolean
   setIsMapAvailable: (available: boolean) => void
-  isMapLoading: boolean
-  setIsMapLoading: (loading: boolean) => void
   isLayersLoading: boolean
   setIsLayersLoading: (loading: boolean) => void
   viewRef: MapView | SceneView | null
   setViewRef: (view: MapView | SceneView | null) => void
   cachedViews: { '2D': MapView | null; '3D': SceneView | null }
-  setCachedView: (type: '2D' | '3D', view: MapView | SceneView | null) => void
+  setCachedView: (type: MapViewType, view: MapView | SceneView | null) => void
+  mapRoots: { '2D': HTMLDivElement | null; '3D': HTMLDivElement | null }
+  setMapRoot: (type: MapViewType, root: HTMLDivElement | null) => void
+  positionObservers: { '2D': PositionObserver | null; '3D': PositionObserver | null }
+  setPositionObserver: (type: MapViewType, observer: PositionObserver | null) => void
 }
 
-// Create the Zustand store for map settings
 export const useMapStore = create<ViewTypeState>((set) => ({
   mapType: '3D',
   switchMapType: (type) => set({ mapType: type }),
@@ -28,8 +35,6 @@ export const useMapStore = create<ViewTypeState>((set) => ({
   toggleRoutingMode: () => set((state) => ({ routingMode: !state.routingMode })),
   isMapAvailable: false,
   setIsMapAvailable: (available) => set({ isMapAvailable: available }),
-  isMapLoading: false,
-  setIsMapLoading: (loading) => set({ isMapLoading: loading }),
   isLayersLoading: false,
   setIsLayersLoading: (loading) => set({ isLayersLoading: loading }),
   viewRef: null,
@@ -38,5 +43,15 @@ export const useMapStore = create<ViewTypeState>((set) => ({
   setCachedView: (type, view) =>
     set((state) => ({
       cachedViews: { ...state.cachedViews, [type]: view }
+    })),
+  mapRoots: { '2D': null, '3D': null },
+  setMapRoot: (type, root) =>
+    set((state) => ({
+      mapRoots: { ...state.mapRoots, [type]: root }
+    })),
+  positionObservers: { '2D': null, '3D': null },
+  setPositionObserver: (type, observer) =>
+    set((state) => ({
+      positionObservers: { ...state.positionObservers, [type]: observer }
     }))
 }))

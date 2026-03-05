@@ -1,7 +1,7 @@
 import Graphic from '@arcgis/core/Graphic'
 import Map from '@arcgis/core/Map'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
-import { SimpleMarkerSymbol } from '@arcgis/core/symbols'
+import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import SceneView from '@arcgis/core/views/SceneView'
 import { useEffect, useRef } from 'react'
 
@@ -110,7 +110,7 @@ const Playground: React.FC = () => {
   }, [mapType, setViewRef])
 
   useEffect(() => {
-    if (viewRef.current) {
+    if (viewRef.current?.map) {
       const pointsLayer = viewRef.current.map.findLayerById('Points') as GraphicsLayer
       if (pointsLayer) {
         updatePointsLayer(pointsLayer)

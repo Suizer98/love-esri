@@ -1,4 +1,4 @@
-import { Point } from '@arcgis/core/geometry'
+import Point from '@arcgis/core/geometry/Point'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
 import { useCallback, useEffect } from 'react'
@@ -26,7 +26,7 @@ const PlaygroundPoint: React.FC<PlaygroundPointsProps> = ({ viewRef }) => {
   )
 
   useEffect(() => {
-    let handle: __esri.Handle | undefined
+    let handle: { remove(): void } | undefined
 
     if (pointMode && viewRef.current) {
       handle = viewRef.current.on('click', handleClick)

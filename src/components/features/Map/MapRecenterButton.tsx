@@ -1,7 +1,9 @@
+import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
 import { Tooltip } from '@chakra-ui/react'
 import { createRoot } from 'react-dom/client'
 
-export const createRecenterButton = (view: __esri.MapView | __esri.SceneView) => {
+export const createRecenterButton = (view: MapView | SceneView) => {
   // Create and add the recenter button
   const recenterButtonDiv = document.createElement('div')
   recenterButtonDiv.className = 'recenter-button esri-widget--button esri-widget'

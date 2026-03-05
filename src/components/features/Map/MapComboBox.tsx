@@ -22,7 +22,7 @@ const MapComboBox: React.FC = () => {
       newBasemap
         .load()
         .then(() => {
-          viewRef.map.basemap = newBasemap
+          if (viewRef?.map) viewRef.map.basemap = newBasemap
         })
         .catch((error) => {
           console.error('Error loading basemap:', error)

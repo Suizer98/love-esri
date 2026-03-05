@@ -1,10 +1,12 @@
 import Graphic from '@arcgis/core/Graphic'
 import PopupTemplate from '@arcgis/core/PopupTemplate'
-import TimeExtent from '@arcgis/core/TimeExtent'
-import TimeInterval from '@arcgis/core/TimeInterval'
+import TimeExtent from '@arcgis/core/time/TimeExtent'
+import TimeInterval from '@arcgis/core/time/TimeInterval'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
-import { PictureMarkerSymbol } from '@arcgis/core/symbols'
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
+import Point from '@arcgis/core/geometry/Point'
 import TimeSlider from '@arcgis/core/widgets/TimeSlider'
+import SceneView from '@arcgis/core/views/SceneView'
 import * as d3 from 'd3'
 
 // Load both CSV files and combine the data
@@ -28,15 +30,18 @@ export const loadSatelliteData = async (): Promise<any[]> => {
 export const updateSatelliteLayer = (
   satelliteLayer: GraphicsLayer,
   data: any[],
-  timeExtent: __esri.TimeExtent
+  timeExtent: TimeExtent
 ) => {
   // Clear all existing graphics first
   satelliteLayer.removeAll()
 
   // Filter data to only include records within the time extent
+  const start = timeExtent.start
+  const end = timeExtent.end
+  if (start == null || end == null) return
   const filteredData = data.filter((d: any) => {
     const recordDate = new Date(d.Date)
-    return recordDate >= timeExtent.start && recordDate <= timeExtent.end
+    return recordDate >= start && recordDate <= end
   })
 
   // Group by satellite number to avoid duplicates
@@ -57,12 +62,11 @@ export const updateSatelliteLayer = (
     const altitude = parseScientific(d.Alt)
 
     if (!isNaN(latitude) && !isNaN(longitude) && !isNaN(altitude)) {
-      const satelliteLoc = {
-        type: 'point',
+      const satelliteLoc = new Point({
         x: longitude,
         y: latitude,
         z: altitude
-      } as __esri.GeometryProperties
+      })
 
       const template = new PopupTemplate({
         title: '{name}',
@@ -101,7 +105,7 @@ const parseScientific = (value: string): number => {
 }
 
 export const initializeTimeSlider = (
-  view: __esri.SceneView,
+  view: SceneView,
   satellitesLayer: GraphicsLayer,
   data: any[]
 ) => {
@@ -134,10 +138,13 @@ export const initializeTimeSlider = (
     // view.ui.add(timeSlider, 'bottom-left')
 
     timeSlider.watch('timeExtent', (newTimeExtent) => {
-      updateSatelliteLayer(satellitesLayer, data, newTimeExtent)
+      if (newTimeExtent) updateSatelliteLayer(satellitesLayer, data, newTimeExtent)
     })
 
-    updateSatelliteLayer(satellitesLayer, data, timeSlider.fullTimeExtent)
+    const fullTimeExtent = timeSlider.fullTimeExtent
+    if (fullTimeExtent) {
+      updateSatelliteLayer(satellitesLayer, data, fullTimeExtent)
+    }
   } else {
     console.error('No data loaded.')
   }

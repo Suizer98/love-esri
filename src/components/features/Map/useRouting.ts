@@ -9,28 +9,34 @@ import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 
+import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
 import { useMapStore } from '../../../store/useMapStore'
 
+interface WatchHandle {
+  remove(): void
+}
+
 export const useRouting = (
-  viewRef: React.MutableRefObject<__esri.MapView | __esri.SceneView | null>
+  viewRef: React.MutableRefObject<MapView | SceneView | null>
 ) => {
   const { routingMode } = useMapStore()
   const routeLayerRef = useRef<GraphicsLayer | null>(null)
   const routeParamsRef = useRef<RouteParameters | null>(null)
   const stopSymbolRef = useRef<SimpleMarkerSymbol | null>(null)
   const routeSymbolRef = useRef<SimpleLineSymbol | null>(null)
-  const clickHandlerRef = useRef<__esri.WatchHandle | null>(null)
-  const clearClickHandlerRef = useRef<__esri.WatchHandle | null>(null)
+  const clickHandlerRef = useRef<WatchHandle | null>(null)
+  const clearClickHandlerRef = useRef<WatchHandle | null>(null)
 
   const [routeSteps, setRouteSteps] = useState<[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const toast = useToast()
 
   useEffect(() => {
-    if (routingMode) {
+    if (routingMode && viewRef.current?.map) {
       const routeLayer = new GraphicsLayer()
       routeLayerRef.current = routeLayer
-      viewRef.current?.map.add(routeLayer)
+      viewRef.current.map.add(routeLayer)
 
       let token
 

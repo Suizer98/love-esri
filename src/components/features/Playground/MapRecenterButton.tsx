@@ -1,9 +1,11 @@
+import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
 import { Tooltip } from '@chakra-ui/react'
 import { createRoot } from 'react-dom/client'
 
 // Recenter button that resets the camera to the initial position
 export const createRecenterButton = (
-  view: __esri.MapView | __esri.SceneView,
+  view: MapView | SceneView,
   initialCamera: any
 ) => {
   // Create and add the recenter button

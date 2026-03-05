@@ -1,3 +1,5 @@
+import Camera from '@arcgis/core/Camera'
+import Point from '@arcgis/core/geometry/Point'
 import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer'
 import MapView from '@arcgis/core/views/MapView'
 import SceneView from '@arcgis/core/views/SceneView'
@@ -17,53 +19,53 @@ const LayerVisibilityControl: React.FC = () => {
   }))
 
   const updateCameraPosition3D = async (layerName: string) => {
-    if (viewRef && mapType === '3D') {
-      const view = viewRef as SceneView
-      const layer = view.map.findLayerById(layerName)
-      if (layer) {
-        await layer.when()
-        const extent = layer.fullExtent
-        if (extent) {
-          if (isDesktopMode) {
-            view.goTo({
-              target: extent,
-              position: {
-                longitude: extent.center.x,
-                latitude: extent.center.y,
-                z: 314.88439
-              },
-              heading: 356.82,
-              tilt: 78.61
-            })
-          } else {
-            view.goTo({
-              position: {
-                longitude: -122.39899666,
-                latitude: 37.77940678,
-                z: 314.88439
-              },
-              heading: 356.82,
-              tilt: 78.61
-            })
-          }
+    const map = viewRef?.map
+    if (!map || mapType !== '3D') return
+    const view = viewRef as SceneView
+    const layer = map.findLayerById(layerName)
+    if (layer) {
+      await layer.when()
+      const extent = layer.fullExtent
+      if (extent) {
+        if (isDesktopMode) {
+          view.goTo({
+            target: extent,
+            position: new Point({
+              x: extent.center.x,
+              y: extent.center.y,
+              z: 314.88439
+            }),
+            heading: 356.82,
+            tilt: 78.61
+          })
+        } else {
+          const camera = new Camera({
+            position: new Point({
+              longitude: -122.39899666,
+              latitude: 37.77940678,
+              z: 314.88439
+            }),
+            heading: 356.82,
+            tilt: 78.61
+          })
+          view.goTo(camera)
         }
       }
     }
   }
 
   const updateCameraPosition2D = async (layerName: string) => {
-    if (viewRef && mapType === '2D') {
-      const view = viewRef as MapView
-      const layer = view.map.findLayerById(layerName) as ImageryTileLayer
-      if (layer) {
-        await layer.when()
-        const extent = layer.fullExtent
-
-        if (extent) {
-          await view.goTo(extent)
-          if (view.zoom < 3) {
-            view.zoom = 3
-          }
+    const map = viewRef?.map
+    if (!map || mapType !== '2D') return
+    const view = viewRef as MapView
+    const layer = map.findLayerById(layerName) as ImageryTileLayer
+    if (layer) {
+      await layer.when()
+      const extent = layer.fullExtent
+      if (extent) {
+        await view.goTo(extent)
+        if (view.zoom < 3) {
+          view.zoom = 3
         }
       }
     }

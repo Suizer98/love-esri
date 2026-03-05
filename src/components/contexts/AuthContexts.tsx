@@ -43,12 +43,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .then(() => {
           const portal = new Portal()
           portal.load().then(() => {
-            const user = portal.user
+            const portalUser = portal.user
+            if (!portalUser) return
             const userInfo = {
-              username: user.username,
-              fullName: user.fullName,
-              email: user.email,
-              role: user.role
+              username: portalUser.username,
+              fullName: portalUser.fullName,
+              email: portalUser.email,
+              role: portalUser.role
               // Add any other properties you need
             }
             setUser(userInfo)
@@ -66,12 +67,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       .then(() => {
         const portal = new Portal()
         portal.load().then(() => {
-          const user = portal.user
+          const portalUser = portal.user
+          if (!portalUser) return
           const userInfo = {
-            username: user.username,
-            fullName: user.fullName,
-            email: user.email,
-            role: user.role
+            username: portalUser.username,
+            fullName: portalUser.fullName,
+            email: portalUser.email,
+            role: portalUser.role
             // Add any other properties you need
           }
           setUser(userInfo)

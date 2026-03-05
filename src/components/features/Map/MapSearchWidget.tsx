@@ -1,6 +1,8 @@
+import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
 import Search from '@arcgis/core/widgets/Search'
 
-export const createSearchWidget = (view: __esri.MapView | __esri.SceneView) => {
+export const createSearchWidget = (view: MapView | SceneView) => {
   const searchWidgetDiv = document.createElement('div')
   searchWidgetDiv.id = 'searchWidgetDiv'
   searchWidgetDiv.className = 'absolute top-4 left-2 p-2 z-10'
@@ -12,8 +14,11 @@ export const createSearchWidget = (view: __esri.MapView | __esri.SceneView) => {
   })
 
   searchWidget.on('search-complete', function () {
-    // Remove the docking functionality
-    view.popup.dockEnabled = false
-    view.popup.collapseEnabled = false
+    if (view.popup) {
+      view.popup.dockEnabled = false
+      if ('collapseEnabled' in view.popup) {
+        (view.popup as { collapseEnabled: boolean }).collapseEnabled = false
+      }
+    }
   })
 }
