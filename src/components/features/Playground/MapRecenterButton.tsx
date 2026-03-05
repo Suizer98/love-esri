@@ -4,10 +4,7 @@ import { Tooltip } from '@chakra-ui/react'
 import { createRoot } from 'react-dom/client'
 
 // Recenter button that resets the camera to the initial position
-export const createRecenterButton = (
-  view: MapView | SceneView,
-  initialCamera: any
-) => {
+export const createRecenterButton = (view: MapView | SceneView, initialCamera: any) => {
   // Create and add the recenter button
   const recenterButtonDiv = document.createElement('div')
   recenterButtonDiv.className = 'recenter-button esri-widget--button esri-widget'

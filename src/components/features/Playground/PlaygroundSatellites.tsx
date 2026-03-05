@@ -1,12 +1,12 @@
 import Graphic from '@arcgis/core/Graphic'
 import PopupTemplate from '@arcgis/core/PopupTemplate'
-import TimeExtent from '@arcgis/core/time/TimeExtent'
-import TimeInterval from '@arcgis/core/time/TimeInterval'
+import Point from '@arcgis/core/geometry/Point'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
-import Point from '@arcgis/core/geometry/Point'
-import TimeSlider from '@arcgis/core/widgets/TimeSlider'
+import TimeExtent from '@arcgis/core/time/TimeExtent'
+import TimeInterval from '@arcgis/core/time/TimeInterval'
 import SceneView from '@arcgis/core/views/SceneView'
+import TimeSlider from '@arcgis/core/widgets/TimeSlider'
 import * as d3 from 'd3'
 
 // Load both CSV files and combine the data

@@ -6,20 +6,18 @@ import FeatureSet from '@arcgis/core/rest/support/FeatureSet'
 import RouteParameters from '@arcgis/core/rest/support/RouteParameters'
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol'
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol'
+import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 
-import MapView from '@arcgis/core/views/MapView'
-import SceneView from '@arcgis/core/views/SceneView'
 import { useMapStore } from '../../../store/useMapStore'
 
 interface WatchHandle {
   remove(): void
 }
 
-export const useRouting = (
-  viewRef: React.MutableRefObject<MapView | SceneView | null>
-) => {
+export const useRouting = (viewRef: React.MutableRefObject<MapView | SceneView | null>) => {
   const { routingMode } = useMapStore()
   const routeLayerRef = useRef<GraphicsLayer | null>(null)
   const routeParamsRef = useRef<RouteParameters | null>(null)

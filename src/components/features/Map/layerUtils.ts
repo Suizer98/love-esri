@@ -1,14 +1,14 @@
 import Graphic from '@arcgis/core/Graphic'
-import Point from '@arcgis/core/geometry/Point'
 import PopupTemplate from '@arcgis/core/PopupTemplate'
+import Point from '@arcgis/core/geometry/Point'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer'
 import Layer from '@arcgis/core/layers/Layer'
 import SceneLayer from '@arcgis/core/layers/SceneLayer'
-import MapView from '@arcgis/core/views/MapView'
-import SceneView from '@arcgis/core/views/SceneView'
 import esriRequest from '@arcgis/core/request'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
+import MapView from '@arcgis/core/views/MapView'
+import SceneView from '@arcgis/core/views/SceneView'
 import * as satellite from 'satellite.js'
 
 import { useLayersStore } from '../../../store/useLayersStore'
@@ -86,7 +86,12 @@ export const addLayersToMap = async (
           url: layer.url
         })
         map.add(layerInstance)
-        loadPromises.push(layerInstance.load().then(() => {}, () => {}))
+        loadPromises.push(
+          layerInstance.load().then(
+            () => {},
+            () => {}
+          )
+        )
       }
     } else if (viewType === '2D' && layer.name === '2D Flow') {
       layerInstance = map.findLayerById(layer.name) as ImageryTileLayer
@@ -98,7 +103,12 @@ export const addLayersToMap = async (
           effect: layer.effect
         })
         map.add(layerInstance)
-        loadPromises.push(layerInstance.load().then(() => {}, () => {}))
+        loadPromises.push(
+          layerInstance.load().then(
+            () => {},
+            () => {}
+          )
+        )
       }
     } else if (layer.type === 'GraphicsLayer' && layer.name === 'Satellites') {
       layerInstance = map.findLayerById(layer.name) as GraphicsLayer
@@ -107,7 +117,12 @@ export const addLayersToMap = async (
           id: layer.name
         })
         map.add(layerInstance)
-        loadPromises.push(layerInstance.load().then(() => {}, () => {}))
+        loadPromises.push(
+          layerInstance.load().then(
+            () => {},
+            () => {}
+          )
+        )
         loadSatelliteData(layerInstance as GraphicsLayer)
       }
     }
@@ -116,7 +131,10 @@ export const addLayersToMap = async (
       layerInstance.visible = layer.visible
       if (layer.visible) {
         loadPromises.push(
-          view.whenLayerView(layerInstance).then(() => {}).catch(() => {})
+          view
+            .whenLayerView(layerInstance)
+            .then(() => {})
+            .catch(() => {})
         )
       }
     }

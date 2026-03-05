@@ -17,7 +17,7 @@ export const createSearchWidget = (view: MapView | SceneView) => {
     if (view.popup) {
       view.popup.dockEnabled = false
       if ('collapseEnabled' in view.popup) {
-        (view.popup as { collapseEnabled: boolean }).collapseEnabled = false
+        ;(view.popup as { collapseEnabled: boolean }).collapseEnabled = false
       }
     }
   })
