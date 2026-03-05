@@ -12,7 +12,9 @@
     "check": "prettier --check ."
   },
   "dependencies": {
+    "@arcgis/ai-components": "^5.0.9",
     "@arcgis/core": "^5.0.0",
+    "@arcgis/map-components": "^5.0.9",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",

@@ -6,6 +6,7 @@ import { useMapStore } from '../../store/useMapStore'
 import { usePlaygroundStore } from '../../store/usePlaygroundStore'
 import { useViewStore } from '../../store/useViewStore'
 import About from '../features/About'
+import AiPage from '../features/Ai/AiPage'
 import LoadingOverlay from '../features/Loading'
 import { LayerLoadingBar } from '../features/Map/LayerLoadingBar'
 import MapPort from '../features/Map/Map'
@@ -60,6 +61,7 @@ export function LoveEsriMainPort(props: LoveEsriMainPortProps) {
           (!props.isVisible || isDesktopMode) && <Route path="/playground" element={<Warning />} />
         )}
         {(!props.isVisible || isDesktopMode) && <Route path="/about" element={<About />} />}
+        <Route path="/ai" element={<AiPage />} />
       </Routes>
     </Box>
   )

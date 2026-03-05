@@ -1,4 +1,4 @@
-import { Box, Checkbox, Radio, RadioGroup, Stack, Text, Tooltip, VStack } from '@chakra-ui/react'
+import { Box, Checkbox, Link, Radio, RadioGroup, Stack, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
@@ -57,6 +57,7 @@ export function LoveEsriViewSideBar() {
   const location = useLocation()
   const isMapRoute = location.pathname === '/'
   const isPlayGroundRoute = location.pathname === '/playground'
+  const isAiRoute = location.pathname === '/ai'
 
   useEffect(() => {
     checkExistingSession()
@@ -178,7 +179,26 @@ export function LoveEsriViewSideBar() {
                   <LoveEsriPlaygroundPoints />
                 </>
               )}
-              {!isMapRoute && !isPlayGroundRoute && (
+              {isAiRoute && (
+                <Box bg="white" p={4} borderRadius="md" boxShadow="md">
+                  <Text fontSize="sm" color="gray.800">
+                    The agents provided in the SDK are pre-configured to work with web maps and
+                    layers. For a web map to be consumed by agents, its layers must first have good
+                    metadata and the map should have embeddings stored as an item resource. For more
+                    information on preparing your web maps and layers for use with the assistant, see
+                    the{' '}
+                    <Link
+                      href="https://developers.arcgis.com/javascript/latest/agentic-apps/ai-webmap-setup/"
+                      isExternal
+                      color="blue.600"
+                    >
+                      Web map setup guide
+                    </Link>{' '}
+                    for use in AI agents.
+                  </Text>
+                </Box>
+              )}
+              {!isMapRoute && !isPlayGroundRoute && !isAiRoute && (
                 <Text
                   className="esri-widget"
                   fontSize="large"
