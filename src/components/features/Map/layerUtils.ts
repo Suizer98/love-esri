@@ -127,8 +127,7 @@ export const addLayersToMap = async (
 }
 
 async function loadSatelliteData(satelliteLayer: GraphicsLayer) {
-  const url =
-    'https://developers.arcgis.com/javascript/latest/sample-code/satellites-3d/live/brightest.txt'
+  const url = '/brightest.txt'
 
   try {
     const response = await esriRequest(url, { responseType: 'text' })
