@@ -2,6 +2,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
+import './config/arcgis'
 import App from './App.tsx'
 import './index.css'
 

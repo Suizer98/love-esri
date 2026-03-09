@@ -44,7 +44,9 @@ export default function AiPage() {
         <arcgis-map
           id="ai-map"
           // itemId="8ab4c20017c44cffa3ad4b2aeacc7d08"
-          itemId="c13bffcad4a244a99062e915e9bc1dc3"
+          // itemId="c13bffcad4a244a99062e915e9bc1dc3"
+          // itemId="d332353ba546475a9ce6f6c75dd4c06c"
+          itemId="d8a2aeccabda42e299d01cadc4a4f8ae"
           style={{ width: '100%', height: '100%' }}
         />
       </div>

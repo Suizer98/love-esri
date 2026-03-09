@@ -1,7 +1,8 @@
 import IdentityManager from '@arcgis/core/identity/IdentityManager'
 import OAuthInfo from '@arcgis/core/identity/OAuthInfo'
-import Portal from '@arcgis/core/portal/Portal'
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
+import { hasLocalPortalCredentials, portalUrl } from '../../config/arcgis'
+import { getPortalUser, signInToLocalPortal } from '../../lib/localPortalAuth'
 
 interface AuthContextProps {
   user: any
@@ -28,61 +29,54 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   })
 
   useEffect(() => {
-    const clientId = import.meta.env.VITE_CLIENT_ID
-
-    const info = new OAuthInfo({
-      appId: clientId,
-      portalUrl: 'https://www.arcgis.com',
-      popup: false
-    })
-
-    IdentityManager.registerOAuthInfos([info])
-
     if (!user) {
-      IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
-        .then(() => {
-          const portal = new Portal()
-          portal.load().then(() => {
-            const portalUser = portal.user
-            if (!portalUser) return
-            const userInfo = {
-              username: portalUser.username,
-              fullName: portalUser.fullName,
-              email: portalUser.email,
-              role: portalUser.role
-              // Add any other properties you need
-            }
+      if (hasLocalPortalCredentials) {
+        const credential = IdentityManager.findCredential(`${portalUrl}/sharing`)
+        const doLocalSignIn = credential
+          ? Promise.resolve()
+          : signInToLocalPortal()
+        doLocalSignIn
+          .then(() => getPortalUser(portalUrl))
+          .then((userInfo) => {
+            if (!userInfo) return
             setUser(userInfo)
             localStorage.setItem('user', JSON.stringify(userInfo))
           })
+          .catch(() => setUser(null))
+      } else {
+        const authPortalUrl = 'https://www.arcgis.com'
+        const clientId = import.meta.env.VITE_CLIENT_ID
+        const info = new OAuthInfo({
+          appId: clientId,
+          portalUrl: authPortalUrl,
+          popup: false
         })
-        .catch(() => {
-          setUser(null)
-        })
+        IdentityManager.registerOAuthInfos([info])
+        IdentityManager.checkSignInStatus(`${authPortalUrl}/sharing`)
+          .then(() => getPortalUser(authPortalUrl))
+          .then((userInfo) => {
+            if (!userInfo) return
+            setUser(userInfo)
+            localStorage.setItem('user', JSON.stringify(userInfo))
+          })
+          .catch(() => setUser(null))
+      }
     }
   }, [user])
 
   const signIn = () => {
-    IdentityManager.getCredential(`https://www.arcgis.com/sharing`)
-      .then(() => {
-        const portal = new Portal()
-        portal.load().then(() => {
-          const portalUser = portal.user
-          if (!portalUser) return
-          const userInfo = {
-            username: portalUser.username,
-            fullName: portalUser.fullName,
-            email: portalUser.email,
-            role: portalUser.role
-            // Add any other properties you need
-          }
-          setUser(userInfo)
-          localStorage.setItem('user', JSON.stringify(userInfo))
-        })
+    const authPortalUrl = hasLocalPortalCredentials ? portalUrl : 'https://www.arcgis.com'
+    const authPromise = hasLocalPortalCredentials
+      ? signInToLocalPortal()
+      : IdentityManager.getCredential(`${authPortalUrl}/sharing`)
+    authPromise
+      .then(() => getPortalUser(authPortalUrl))
+      .then((userInfo) => {
+        if (!userInfo) return
+        setUser(userInfo)
+        localStorage.setItem('user', JSON.stringify(userInfo))
       })
-      .catch(() => {
-        setUser(null)
-      })
+      .catch(() => setUser(null))
   }
 
   const signOut = () => {

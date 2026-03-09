@@ -1,8 +1,9 @@
 import esriConfig from '@arcgis/core/config'
 import IdentityManager from '@arcgis/core/identity/IdentityManager'
 import OAuthInfo from '@arcgis/core/identity/OAuthInfo'
-import Portal from '@arcgis/core/portal/Portal'
 import { create } from 'zustand'
+import { hasLocalPortalCredentials, portalUrl } from '../config/arcgis'
+import { getPortalUser, signInToLocalPortal } from '../lib/localPortalAuth'
 
 interface AuthState {
   user: any
@@ -15,78 +16,75 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: JSON.parse(localStorage.getItem('user') || 'null'),
 
   checkExistingSession: async (): Promise<string> => {
-    const clientId = import.meta.env.VITE_CLIENT_ID
     const apiKey = import.meta.env.VITE_ESRI_API
 
+    if (hasLocalPortalCredentials) {
+      try {
+        const credential = IdentityManager.findCredential(`${portalUrl}/sharing`)
+        if (!credential) await signInToLocalPortal()
+        const userInfo = await getPortalUser(portalUrl)
+        if (!userInfo) throw new Error('No user')
+        set({ user: userInfo })
+        localStorage.setItem('user', JSON.stringify(userInfo))
+        return 'success'
+      } catch {
+        // fall through to API key for arcgis.com
+      }
+    }
+
+    const clientId = import.meta.env.VITE_CLIENT_ID
+    const authPortalUrl = 'https://www.arcgis.com'
     const info = new OAuthInfo({
       appId: clientId,
-      portalUrl: 'https://www.arcgis.com',
+      portalUrl: authPortalUrl,
       popup: false
     })
-
     IdentityManager.registerOAuthInfos([info])
 
-    // If not log in, use api key defined in env, this can be removed anytime
     try {
-      await IdentityManager.checkSignInStatus(`${info.portalUrl}/sharing`)
-      const portal = new Portal()
-      await portal.load()
-      const portalUser = portal.user
-      if (!portalUser) throw new Error('No user')
-      const userInfo = {
-        username: portalUser.username,
-        fullName: portalUser.fullName,
-        email: portalUser.email,
-        role: portalUser.role
-      }
+      await IdentityManager.checkSignInStatus(`${authPortalUrl}/sharing`)
+      const userInfo = await getPortalUser(authPortalUrl)
+      if (!userInfo) throw new Error('No user')
       set({ user: userInfo })
       localStorage.setItem('user', JSON.stringify(userInfo))
       return 'success'
-    } catch (error) {
-      // If the user is not signed in, use the API key
+    } catch {
       if (apiKey) {
         esriConfig.apiKey = apiKey
-
-        const userInfo = {
-          username: 'Default User',
-          role: 'Default'
-        }
-        set({ user: userInfo })
+        set({
+          user: {
+            username: 'Default User',
+            role: 'Default'
+          }
+        })
         localStorage.setItem('user', JSON.stringify({ apiKey }))
         return 'no_sign_in_but_api_key'
-      } else {
-        set({ user: null })
-        return 'error'
       }
+      set({ user: null })
+      return 'error'
     }
   },
 
   signIn: async () => {
-    const clientId = import.meta.env.VITE_CLIENT_ID
-
-    const info = new OAuthInfo({
-      appId: clientId,
-      portalUrl: 'https://www.arcgis.com',
-      popup: false
-    })
-
-    IdentityManager.registerOAuthInfos([info])
-
     try {
-      await IdentityManager.getCredential('https://www.arcgis.com/sharing')
-      const portal = new Portal()
-      await portal.load()
-      const portalUser = portal.user
-      if (!portalUser) return
-      const userInfo = {
-        username: portalUser.username,
-        fullName: portalUser.fullName,
-        email: portalUser.email,
-        role: portalUser.role
+      const authPortalUrl = hasLocalPortalCredentials ? portalUrl : 'https://www.arcgis.com'
+      if (hasLocalPortalCredentials) {
+        await signInToLocalPortal()
+      } else {
+        const clientId = import.meta.env.VITE_CLIENT_ID
+        const info = new OAuthInfo({
+          appId: clientId,
+          portalUrl: authPortalUrl,
+          popup: false
+        })
+        IdentityManager.registerOAuthInfos([info])
+        await IdentityManager.getCredential(`${authPortalUrl}/sharing`)
       }
+      const userInfo = await getPortalUser(authPortalUrl)
+      if (!userInfo) return
       set({ user: userInfo })
       localStorage.setItem('user', JSON.stringify(userInfo))
-    } catch (error) {
+    } catch {
       set({ user: null })
     }
   },
