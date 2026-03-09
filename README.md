@@ -78,13 +78,20 @@ To see if any errors prevent production build compilation:
 npm run build
 ```
 
-### Prepare enviroment variables for app use
+### Prepare environment variables for app use
 
-`VITE_CLIENT_ID`: The OAuth application client ID
+Copy `.env.sample` to `.env` and set values as needed.
 
-`VITE_CLIENT_SECRET`: The secret key to be used together with `VITE_CLIENT_ID`
+ArcGIS Online (default):
 
-`VITE_ESRI_API`: The normal api key provided when you register ArcGIS Developer
+- `VITE_ESRI_API` – API key from ArcGIS Developer; when set, the app uses it as default (no sign-in prompt).
+- `VITE_CLIENT_ID` – OAuth app client ID from ArcGIS Online (developers.arcgis.com); required if you want sign-in to arcgis.com and are not using the API key.
+
+Custom portal (e.g. ArcGIS Enterprise):
+
+- `VITE_ARCGIS_PORTAL_URL` – Portal URL (e.g. `https://portal.local:7443/arcgis`). When set, the app uses this portal for the map and sign-in.
+- `VITE_ARCGIS_PORTAL_CLIENT_ID` – OAuth app client ID from an app registered on your portal (Portal → OAuth 2.0). Use this for OAuth sign-in to the custom portal. Do not use your ArcGIS Online client ID here.
+- `VITE_ARCGIS_PORTAL_USER` and `VITE_ARCGIS_PORTAL_PASSWORD` – Optional. When both are set, the app signs in to the portal with these (no OAuth redirect). If unset, sign-in uses OAuth and requires `VITE_ARCGIS_PORTAL_CLIENT_ID`.
 
 ### WebGL issue causing 3D Scene not loading
 

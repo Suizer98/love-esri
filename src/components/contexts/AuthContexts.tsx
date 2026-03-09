@@ -1,7 +1,8 @@
+import esriConfig from '@arcgis/core/config'
 import IdentityManager from '@arcgis/core/identity/IdentityManager'
 import OAuthInfo from '@arcgis/core/identity/OAuthInfo'
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
-import { hasLocalPortalCredentials, portalUrl } from '../../config/arcgis'
+import { hasLocalPortalCredentials, isLocalPortal, portalUrl } from '../../config/arcgis'
 import { getPortalUser, signInToLocalPortal } from '../../lib/localPortalAuth'
 
 interface AuthContextProps {
@@ -30,12 +31,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (!user) {
-      if (hasLocalPortalCredentials) {
-        const credential = IdentityManager.findCredential(`${portalUrl}/sharing`)
-        const doLocalSignIn = credential
-          ? Promise.resolve()
-          : signInToLocalPortal()
-        doLocalSignIn
+      const apiKey = import.meta.env.VITE_ESRI_API
+      const clientId = import.meta.env.VITE_CLIENT_ID
+      const portalClientId = import.meta.env.VITE_ARCGIS_PORTAL_CLIENT_ID
+      if (isLocalPortal) {
+        const doAuth = hasLocalPortalCredentials
+          ? (IdentityManager.findCredential(`${portalUrl}/sharing`) ? Promise.resolve() : signInToLocalPortal())
+          : portalClientId
+            ? (IdentityManager.registerOAuthInfos([new OAuthInfo({ appId: portalClientId, portalUrl, popup: false })]), IdentityManager.checkSignInStatus(`${portalUrl}/sharing`))
+            : Promise.reject(new Error('Set VITE_ARCGIS_PORTAL_USER and VITE_ARCGIS_PORTAL_PASSWORD in .env, or set VITE_ARCGIS_PORTAL_CLIENT_ID'))
+        doAuth
           .then(() => getPortalUser(portalUrl))
           .then((userInfo) => {
             if (!userInfo) return
@@ -43,15 +48,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem('user', JSON.stringify(userInfo))
           })
           .catch(() => setUser(null))
-      } else {
+      } else if (apiKey) {
+        esriConfig.apiKey = apiKey
+        setUser({ username: 'Default User', role: 'Default' })
+        localStorage.setItem('user', JSON.stringify({ apiKey }))
+      } else if (clientId) {
         const authPortalUrl = 'https://www.arcgis.com'
-        const clientId = import.meta.env.VITE_CLIENT_ID
-        const info = new OAuthInfo({
-          appId: clientId,
-          portalUrl: authPortalUrl,
-          popup: false
-        })
-        IdentityManager.registerOAuthInfos([info])
+        IdentityManager.registerOAuthInfos([new OAuthInfo({ appId: clientId, portalUrl: authPortalUrl, popup: false })])
         IdentityManager.checkSignInStatus(`${authPortalUrl}/sharing`)
           .then(() => getPortalUser(authPortalUrl))
           .then((userInfo) => {
@@ -65,10 +68,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [user])
 
   const signIn = () => {
-    const authPortalUrl = hasLocalPortalCredentials ? portalUrl : 'https://www.arcgis.com'
-    const authPromise = hasLocalPortalCredentials
-      ? signInToLocalPortal()
-      : IdentityManager.getCredential(`${authPortalUrl}/sharing`)
+    const clientId = import.meta.env.VITE_CLIENT_ID
+    const portalClientId = import.meta.env.VITE_ARCGIS_PORTAL_CLIENT_ID
+    const authPromise = isLocalPortal
+      ? hasLocalPortalCredentials
+        ? signInToLocalPortal()
+        : portalClientId
+          ? (IdentityManager.registerOAuthInfos([new OAuthInfo({ appId: portalClientId, portalUrl, popup: false })]), IdentityManager.getCredential(`${portalUrl}/sharing`))
+          : Promise.reject(new Error('Set VITE_ARCGIS_PORTAL_USER and VITE_ARCGIS_PORTAL_PASSWORD in .env, or set VITE_ARCGIS_PORTAL_CLIENT_ID'))
+      : clientId
+        ? (IdentityManager.registerOAuthInfos([new OAuthInfo({ appId: clientId, portalUrl: 'https://www.arcgis.com', popup: false })]), IdentityManager.getCredential('https://www.arcgis.com/sharing'))
+        : Promise.reject(new Error('VITE_CLIENT_ID required'))
+    const authPortalUrl = isLocalPortal ? portalUrl : 'https://www.arcgis.com'
     authPromise
       .then(() => getPortalUser(authPortalUrl))
       .then((userInfo) => {
